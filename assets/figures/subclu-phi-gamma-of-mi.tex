@@ -1,0 +1,16 @@
+\begin{figure}
+	\centering
+	\begin{tikzpicture}
+		\newcommand{\varDataFile}{assets/data/subclu-phi-gamma-of-mi.dat}
+		\begin{axis}[
+				xmin=0,
+				width=\varImgWidth,
+				xlabel= $ \mu $]
+			\addplot[blue, mark=*] table[x={mi}, y={phi}]{\varDataFile};
+			\addplot[red, mark=diamond*] table[x={mi},y={gamma}]{\varDataFile};
+			\legend{$ \phi $, $ \gamma $}
+		\end{axis}
+	\end{tikzpicture}
+	\caption{Wartości $ \phi $ oraz $ \gamma $ w zależności od $ \mu $. Dla każdej z wartości $ \varepsilon $ algorytm SUBCLU został wykonany z parametrem $ \varepsilon=200 $. Zbiór danych i algorytm grupowania podprzestrzeni jak w opisie \myhyperref{fig:odc:subclu-gamma-of-n}{rysunku} dla $ n = 5 $.}
+	\label{fig:odc:subclu-phi-gamma-of-mi}
+\end{figure}

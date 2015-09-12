@@ -1,0 +1,36 @@
+\begin{algorithm}[t]
+ 	\caption{Wydajne jedno-wymiarowe grupowanie.}\label{odc:odc}
+
+	\DontPrintSemicolon
+	\KwIn{$\varepsilon$, $\mu$, $D$ - jedno-wymiarowy posortowany zbiór wektorów}
+	\KwOut{$D$ z każdym punktem z przypisaną etykietą grupy albo szumu}
+	$D(n)$ \tcp*{$ n $-ty element $D$, indeksowany od $ 0 $}
+	$dist(v_1, v_2)$ \tcp*{ odległość między $v_1$ i $v_2$}
+	$cl(v)$ \tcp*{ etykieta grupy wektora $v$}
+  $cl \gets 1$  \tcp*{etykieta grupy}
+  $ce \gets false$ \tcp*{flaga pomocnicza}
+  $l \gets 0$, $r \gets 0$ \tcp*{włączne granice otoczenia $ \varepsilon $}
+  \For{$i \gets 0$ \KwTo $size(D) - 1$}{
+  	$v \gets D(i)$\;
+  	\tcc{adjust bounds}
+  	\lWhile{$dist(v, D(l)) > \varepsilon$}{$l \gets l + 1$}
+  	\lWhile{$dist(v, D(r + 1)) \le \varepsilon$ \textbf{and} $r + 1 < size(D)$}{$r \gets r + 1$}
+  	\tcc{next cluster}
+  	\If{$cl(v)$ is undefined \textbf{and} $ce$}{
+  		$cl(v) \gets noise$\;
+  		$ce \gets false$\;
+  		$cl \gets cl + 1$\;
+  	}
+  	\tcc{expand cluster}
+  	\If{$r - l + 1 >= \mu$}{
+  		$j \gets r$\;
+  		\While{$j \ge l$ \textbf{and} $cl(D(j)) \ne cl$}{
+  			$cl(D(j)) \gets cl$\;
+  			$ce \gets true$\;
+  			$j \gets j - 1$
+  		}
+  	}
+  }
+  
+
+\end{algorithm}

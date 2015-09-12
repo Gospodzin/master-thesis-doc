@@ -1,0 +1,46 @@
+\begin{figure}
+	\begin{minipage}[b]{.5\linewidth}
+		\begin{tikzpicture}
+			\centering
+			\newcommand{\varDataFile}{assets/data/subclu-phi-gamma-of-epsilon.dat}
+			\begin{axis}[
+				xmin=0, ymin=0,
+				width=\linewidth,
+				xlabel= $ \varepsilon $,
+				extra y ticks={0.16129} ,
+				extra y tick labels={$\frac{5}{2^5-1}$},
+				extra y tick style={yticklabel style={xshift=.5ex ,yshift=-1ex}},
+				legend columns=2
+			] 
+			\addplot[blue, mark=*] table[x={eps}, y={phi}]{\varDataFile};
+			\addplot[red, mark=diamond*] table[x={eps},y={gamma}]{\varDataFile};
+			\addplot[green, thick, dashed] table[x={eps},y expr=\thisrow{c2}/100000]{\varDataFile};
+			\addplot[brown, thick, dotted] table[x={eps},y expr=\thisrow{c3}/100000]{\varDataFile};
+
+			\legend{$ \phi $, $ \gamma $, $ c_2 $, $ c_3 $}
+			\end{axis}
+		\end{tikzpicture}
+		\subcaption{dla $ \mu=10 $} \label{fig:odc:subclu-phi-gamma-of-epsilon}
+	\end{minipage}
+	\begin{minipage}[b]{.5\linewidth}
+		\centering
+		\begin{tikzpicture}
+			\newcommand{\varDataFile}{assets/data/subclu-phi-gamma-of-mi.dat}
+			\begin{axis}[
+			xmin=0,
+			ymin=.15,
+			width=\linewidth,
+			xlabel= $ \mu $,
+			legend pos=north west,
+			legend columns=2]
+			\addplot[blue, mark=*] table[x={mi}, y={phi}]{\varDataFile};
+			\addplot[red, mark=diamond*] table[x={mi},y={gamma}]{\varDataFile};
+			\addplot[green, thick, dashed] table[x={mi},y expr=\thisrow{c2}/200000]{\varDataFile};
+			\addplot[brown, thick, dotted] table[x={mi},y expr=\thisrow{c3}/200000]{\varDataFile};
+			\legend{$ \phi $, $ \gamma $, $ c_2 $, $ c_3 $}
+			\end{axis}
+		\end{tikzpicture}
+		\subcaption{dla $ \varepsilon=1500 $} \label{fig:odc:subclu-phi-gamma-of-mi}
+	\end{minipage}
+	\caption{Wartości $ \phi $ oraz $ \gamma $ w zależności od \subref{fig:odc:subclu-phi-gamma-of-epsilon} $ \varepsilon $ oraz \subref{fig:odc:subclu-phi-gamma-of-mi} $ \mu $. Zbiór danych i algorytm grupowania podprzestrzeni jak w opisie \myhyperref{fig:odc:subclu-gamma-of-n}{rysunku} dla $ n = 5 $. Wartości $ c_n $ są proporcjonalne do sumy punktów we wszystkich grupach znalezionych w $ n $-wymiarowych podprzestrzeniach.}
+\end{figure}

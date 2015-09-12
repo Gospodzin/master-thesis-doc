@@ -1,0 +1,27 @@
+\begin{figure}
+	\centering
+	\begin{tikzpicture}
+		\begin{axis}[
+			width=.9*\varImgWidth,
+			height=.9*\varImgWidth,
+			xlabel=x, ylabel=y,
+			xmin=0, ymin=0, xmax=8, ymax=8
+			]
+			
+			\filldraw[fill=blue!40, draw=none, opacity=.5] (0,3) rectangle (8,5);
+			
+			\addplot[blue, only marks] coordinates{
+				(1,2) (1,4) (2,3.4) (6,4.7) (6,1) 
+				(4,.5) (4, 6) (3, 6.5) (6, 6) (.5, 6.5) 
+				(4.5, 2.5) (7, 3) (7, 7) (3.6,3.7) (3.7,4.6) (4.4,4.1)};
+			
+			\addplot[red, mark=*, nodes near coords=$ p $,every node near coord/.style={black, anchor=135}, only marks] coordinates {(4,4)};
+			\draw[red] (4,4) circle(1);
+			
+			\draw[thick,<->] (2.9,3) -- (2.9,5);
+			\node at (2.6,4){$ 2\varepsilon $};
+		
+		\end{axis}
+	\end{tikzpicture}
+	\caption{Metoda projekcji z projekcją na wymiar $ y $. Wyznaczanie sąsiedztwa punktu $ p $.}\label{qscan:projection-space-cut}
+\end{figure}

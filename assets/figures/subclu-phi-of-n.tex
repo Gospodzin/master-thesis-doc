@@ -1,0 +1,18 @@
+\begin{figure}
+	\centering
+	\begin{tikzpicture}
+		\newcommand{\varDataFile}{assets/data/subclu-phi-of-n.dat}
+		\begin{axis}[xmin=1, ymin=0, samples=50, width=\varImgWidth, xlabel=$ n $-wymiarowość zbioru danych, ylabel=$ \phi $]
+			\addplot[blue, mark=*] table[x={dimensions}, y={eps-500-mi-10}]{\varDataFile};
+			\addplot[red, mark=square*] table[x={dimensions}, y={eps-200-mi-10}]{\varDataFile};
+			\addplot[black, mark=triangle*] table[x={dimensions}, y={eps-50-mi-10}]{\varDataFile};
+			\addplot[green, mark=diamond*] table[x={dimensions}, y={eps-200-mi-50}]{\varDataFile};
+			\legend{{$ \varepsilon=500 $, $ \mu=10 $},
+				{$ \varepsilon=200 $, $ \mu=10 $},
+				{$ \varepsilon=50 $, $ \mu=10 $},
+				{$ \varepsilon=200 $, $ \mu=50 $}}
+		\end{axis}
+	\end{tikzpicture}
+	\caption{Wartość $ \phi $ w zależności od wymiarowości zbioru danych. Pomiary przeprowadzono jak w opisie \myhyperref{fig:odc:subclu-gamma-of-n}{rysunku}.}
+	\label{fig:odc:subclu-phi-of-n}
+\end{figure}

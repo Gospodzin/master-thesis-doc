@@ -1,0 +1,21 @@
+\begin{table}
+	\centering
+	\begin{tabular}{c | c | c | c | c |}
+		$ n $ & $ |D| $ & $ T_{TI} [s]$ & $ T_{W} [s]$ & $ \frac{T_{W}}{T_{TI}} [\%] $ \\ \hline
+		$ 4 $  & $ 10000 $	& 3,114 	& 1,685    & 54,11 \\ \hline
+		$ 6 $  & $ 10000 $	& 15,085 	& 11,186   & 74,15 \\ \hline
+		$ 8 $  & $ 10000 $	& 59,437 	& 52,411 	 & 88,18 \\ \hline
+		$ 10 $ & $ 10000 $  & 225,965 & 214,321  & 94,85 \\ \hline
+		$ 10 $ & $ 9000 $ 	& 184,136 & 174,886  & 94,98 \\ \hline
+		$ 10 $ & $ 8000 $ 	& 144,912 & 137,608  & 94,96 \\ \hline
+		$ 10 $ & $ 7000 $ 	& 108,599 & 103,239  & 95,06 \\ \hline
+		$ 10 $ & $ 6000 $ 	& 81,476 	& 77,976 	 & 95,70 \\ \hline
+		$ 10 $ & $ 5000 $ 	& 54,121 	& 51,11 	 & 94,44 \\ \hline
+		$ 10 $ & $ 4000 $ 	& 35,056 	& 33,168 	 & 94,61 \\ \hline
+
+
+
+
+	\end{tabular}
+	\caption{Testy przeprowadzone na próbach z rzeczywistego 56-wymiarowego zbioru danych. Próby $ n $-wymiarowe o liczności $ |D| $ uzyskano ograniczając wymiarowość za pomocą PCA i losując odpowiednią ilość punktów. SUBCLU zostało wywołane z parametrami $ \varepsilon=10 $, $ \mu=10 $. Do grupowania podprzestrzeni wykorzystano TI-DBSCAN z wyjątkiem 1-wymiarowych podprzestrzeni, gdzie dla $ T_{TI} $ użyto TI-DBSCAN, a dla $ T_{W} $ użyto \myhyperref{odc:odc}{algorytmu}. $ T_{TI},\,T_{W} $ - całkowity czas grupowania algorytmem SUBCLU.}\label{odc:real-test}
+\end{table} 

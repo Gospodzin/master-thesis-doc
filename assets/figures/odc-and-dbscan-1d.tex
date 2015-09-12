@@ -1,0 +1,31 @@
+\begin{figure}
+	\begin{minipage}[b]{.5\linewidth}
+		\centering
+		\begin{tikzpicture}
+			\begin{axis}[
+					width=\linewidth,
+					xlabel=liczba punktów,
+					ylabel=czas wykonania,
+					y unit=\si{\s},
+				]
+				\addplot table {assets/data/odc.dat};
+			\end{axis}
+		\end{tikzpicture}
+		\subcaption{wydajne jedno-wymiarowe grupowanie}
+	\end{minipage}%
+	\begin{minipage}[b]{.5\linewidth}
+	\centering
+		\begin{tikzpicture}
+			\begin{axis}[
+					width=\linewidth,
+					xlabel=liczba punktów,
+					ylabel=czas wykonania,
+					y unit=\si{\s},
+				]
+				\addplot table {assets/data/dbscan-1d.dat};
+			\end{axis}
+  	\end{tikzpicture}
+		\subcaption{TIDBSCAN}
+	\end{minipage}
+	\caption{Czas grupowania jednowymiarowych danych za pomocą wydajnego jedno-wymiarowego grupowania oraz TIDBSCAN w zależności od wielkości zbioru danych. Algorytmy wykonane jak w opisie \myhyperref{odc:odc-vs-dbscan-ratio}{rysunku}.}\label{odc:odc-and-dbscan}
+\end{figure}

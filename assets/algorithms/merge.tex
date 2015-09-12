@@ -1,0 +1,132 @@
+\begin{algorithm}
+ 	\caption{Scalanie wyników grupowania DBSCAN.}\label{qscan:algo:merge}
+
+	\DontPrintSemicolon
+	
+	\SetKwFunction{merge}{merge}
+	\SetKwFunction{getClusterMappings}{createCidMaps}
+	
+	\setcounter{AlgoLine}{0}
+	\nonl\SetKwProg{myproc}{Wejście}{}{}
+	\myproc{}{
+		$ L,\, R $ - pogrupowane podzbiory zbioru danych \;
+		$ D $ - zbiór danych \;
+		$ \varepsilon $ - parametr DBSCAN\;
+		$ b $ - granica podziału danych \;
+		$ d $ - wymiar podziału danych \;
+	}
+	\setcounter{AlgoLine}{0}
+	\nonl\SetKwProg{myproc}{Wyjście}{}{}
+	\myproc{}{
+		$D$ z każdym punktem z przypisaną etykietą grupy albo szumu\;
+	}
+	\setcounter{AlgoLine}{0}
+	\nonl\SetKwProg{myproc}{Niezmienniki}{}{}
+	\myproc{}{
+		$ L, R $ są pogrupowane z parametrem $ \varepsilon $\;
+		$ L = \set{v \in D | v_d \le b + \frac{3}{2}\varepsilon} $ \;
+		$ R = \set{v \in D | v_d \ge b - \frac{3}{2}\varepsilon} $ \;
+	}
+	\setcounter{AlgoLine}{0}
+	\nonl\SetKwProg{myproc}{Definicje}{}{}
+	\myproc{}{
+		$ cid_V(v) $ - etykieta grupy punktu $ v $ w zbiorze $ V $\; 
+		$ node_P(c) $ - węzeł z etykietą grupy $ c $ oraz zbioru $ P $\;
+		$ adjacent(n,\,m) $ - relacja symetryczna przylegania $ n $ do $ m $\;
+		$ core_V(v) $ - czy $ v $ jest punktem rdzeniowym w zbiorze $ V $\;
+		$ discovered(n) $ - czy węzeł $ n $ został już odwiedzony\;
+		$ empty(q) $ - czy kolejka $ q $ jest pusta\;
+		$ next(q) $ - zwróć i usuń kolejny element z kolejki $ q $\;
+		zbiór $ V $ jest pogrupowany - $ \forall v \in V $ jest zdefiniowane $ cid_V(v) $
+	}
+	\setcounter{AlgoLine}{0}
+	\nonl\SetKwProg{myalg}{Algorytm}{}{}
+	\myalg{\merge{L, R, D, $ \varepsilon $, b, d}}{
+		$ maxlcid \gets \max(\set{cid_L(v) | v \in L})$ \;
+		\ForEach(\tcp*[f]{zapewnia unikalność etykiet grup}){$ v $ \textbf{in} $ R $}{
+			\lIf{$ cid_R(v) \neq noise $} {$ cid_R(v) \gets cid_R(v) + maxlcid $}
+		} 
+		
+		$ LM \gets \set{v \in L | v_d \ge b - \frac{3}{2}\varepsilon} $ \;
+		$ RM \gets \set{v \in R | v_d \le b + \frac{3}{2}\varepsilon} $ \;
+		\lForEach{$ v $ \textbf{in} $ LM $}{$ cid_{LM}(v) \gets cid_{L}(v) $}
+		\lForEach{$ v $ \textbf{in} $ RM $}{$ cid_{RM}(v) \gets cid_{R}(v) $}
+		
+		$ maxrcid \gets \max(\set{cid_R	(v) | v \in R})$ \;
+		\tcp{zbiory par $ (cid_{old},\,cid_{new}) $)}
+		$ (lcidmap,\,rcidmap) \gets \getClusterMappings{LM, RM, rmaxcid+1} $ \;
+		\ForEach{$ v $ \textbf{in} $ D $}{
+			\tcp{uspójnienie grupy}
+			\lIf{$(c_1, c_2) \in lcidmap \mid c_1=cid_L(v)$} {$ cid_L(v) \gets c_2$}
+			\lIf{$(c_3, c_4) \in rcidmap \mid c_3=cid_R(v)$} {$ cid_R(v) \gets c_4$}
+			\tcp{przypisuje grupę do punktu w $ D $}
+			\lIf{$v_d \le b - \frac{1}{2}\varepsilon$} {$ cid_D(v) \gets cid_L(v)$}
+			\lElse{$ cid_D(v) \gets cid_R(v)$}
+		}
+	}
+\end{algorithm}
+
+\newlength{\oldinterspacetitleruled}%
+\newlength{\oldalgotitleheightrule}%
+\setlength{\oldinterspacetitleruled}{\interspacetitleruled}%
+\setlength{\oldalgotitleheightrule}{\algotitleheightrule}%
+\setlength{\interspacetitleruled}{0pt}%
+\setlength{\algotitleheightrule}{0pt}%
+\begin{algorithm}[!htp]
+	\DontPrintSemicolon
+	
+	\SetKwFunction{getClusterMappings}{createCidMaps}
+	\SetKwFunction{getComponents}{getComponents}
+	\SetKwFunction{bfs}{getComponentBfs}
+	
+	\setcounter{AlgoLine}{0}
+	\nonl\SetKwProg{myproc}{Procedura}{}{}
+	\myproc{\getClusterMappings{L, R, cidoffset}}{
+		$ graph \gets \emptyset $\;
+		\ForEach{$ v $ \textbf{in} $ L $}{
+			\If{$ core_L(v) \land core_R(v) $}{
+				$ graph \gets graph \cup node_L(cid_L(v)) \cup node_R(cid_R(v)) $
+				$ adjacent(node_L(cid_L(v)),\,node_R(cid_R(v))) $
+			}
+		}
+		$ components \gets \getComponents{graph} $ \;
+		$ newcid \gets $ \textit{cidoffset} \;
+		$ lcidmap \gets \emptyset $, $ rcidmap \gets \emptyset $ \tcp*{zbiory par $ (cid_{old},\,cid_{new}) $)}
+		\ForEach{$ component $ \textbf{in} $ components $}{
+			\ForEach{$ node_{part}(oldcid) $ \textbf{in} $ component $}{
+				\lIf{$ part = L $}{$ lcidmap \gets lcidmap \cup (oldcid, newcid) $}
+				\lIf{$ part = R $}{$ rcidmap \gets rcidmap \cup (oldcid, newcid) $}
+			}
+			$ newcid \gets cid + 1 $\;
+		}
+		\KwRet{$ (lcidmap,\,rcidmap) $} \;
+	}
+	\setcounter{AlgoLine}{0}
+	\nonl\SetKwProg{myproc}{Procedura}{}{}
+	\myproc{\getComponents{graph}}{
+		\tcc{Modyfikacja \cite{connectedcomponentsbfs}}
+		$ discovered(n) \gets false \mid n \in graph$ \;
+		$ components \gets \emptyset $ \;
+		\ForEach{$ node $ \textbf{in} $ graph $}{
+			\If{$ \neg discovered(node) $}{$ components \gets components \cup \bfs(node) $}			
+		}
+	}
+	\setcounter{AlgoLine}{0}
+	\nonl\SetKwProg{myproc}{Procedura}{}{}
+	\myproc{\bfs{startnode}}{
+		\tcc{Modyfikacja \cite{connectedcomponentsbfs}}
+		$ component \gets \emptyset $ \;
+		$ discovered(startNode) \gets true $ \;
+		$ queue \gets \emptyset$ \tcp*{kolejka fifo}
+		\While{$ \neg empty(queue) $}{
+			$ node \gets next(queue) $ \;
+			$ component \gets component \cup node $ \;
+			\ForEach{$ adjnode $ \textbf{in} $ \set{n | adjacent(node, n) \land \neg discovered(n)} $}{
+				$ discovered(adjnode) \gets true $ \;
+				$ queue \gets queue \cup adjnode $	
+			}
+		}
+	}
+\end{algorithm}
+\setlength{\interspacetitleruled}{\oldinterspacetitleruled}%
+\setlength{\algotitleheightrule}{\oldalgotitleheightrule}%

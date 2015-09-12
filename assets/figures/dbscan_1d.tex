@@ -1,0 +1,15 @@
+\begin{figure}
+    \begin{tikzpicture}
+      \begin{axis}[
+          width=\linewidth,
+          grid=major, 
+          grid style={dashed,gray!30},
+          xlabel=liczba punktów,
+          ylabel=czas wykonania,
+          y unit=\si{\ms},
+        ]
+        \addplot table {assets/data/dbscan_1d.dat};
+      \end{axis}
+    \end{tikzpicture}
+    \caption{Czas wykonania DBSCAN na jednowymiarowych daych w zależności od wielkości zbioru danych.}
+\end{figure}

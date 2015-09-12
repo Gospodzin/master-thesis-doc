@@ -1,0 +1,61 @@
+\begin{figure}
+	\begin{minipage}[b]{.5\linewidth}
+		\centering
+		\begin{tikzpicture}
+		\begin{axis}[
+		width=\linewidth,
+		height=\linewidth,
+		xlabel=x, ylabel=y,
+		xmin=0, ymin=0, xmax=8, ymax=8
+		]
+		
+		\foreach \x in {0,0.5,...,8}
+		{%
+			\foreach \y in {0,0.5,...,8}
+			{%
+				\edef\e {\noexpand \fill[blue] (\x, \y) circle (2pt)}%
+				\e;
+			}
+		}
+		
+		\filldraw[fill=blue!40, draw=none, opacity=.5] (0,1) rectangle (8,3);
+		\filldraw[fill=green!40, draw=none, opacity=.5] (0,5) rectangle (8,7);
+		
+		\addplot[red, mark=*, nodes near coords=$ p_1 $,every node near coord/.style={black, anchor=135}, only marks] coordinates {(4,6)};
+		\addplot[red, mark=*, nodes near coords=$ p_2 $,every node near coord/.style={black, anchor=135}, only marks] coordinates {(4,2)};
+		\draw[red, thick] (0,4) -- (8,4);
+		\end{axis}
+		\end{tikzpicture}
+		\subcaption{niewydajny podział}\label{qscan:projection-space-bad-good-cut-bad}
+	\end{minipage}%
+	\begin{minipage}[b]{.5\linewidth}
+		\centering
+		\begin{tikzpicture}
+		\begin{axis}[
+		width=\linewidth,
+		height=\linewidth,
+		xlabel=x, ylabel=y,
+		xmin=0, ymin=0, xmax=8, ymax=8
+		]
+		
+		\foreach \x in {0,0.5,...,8}
+		{%
+			\foreach \y in {0,0.5,...,8}
+			{%
+				\edef\e {\noexpand \fill[blue] (\x, \y) circle (2pt)}%
+				\e;
+			}
+		}
+		
+		\filldraw[fill=blue!40, draw=none, opacity=.5] (0,1) rectangle (4,3);
+		\filldraw[fill=green!40, draw=none, opacity=.5] (4,5) rectangle (8,7);
+				
+		\addplot[red, mark=*, nodes near coords=$ p_1 $,every node near coord/.style={black, anchor=135}, only marks] coordinates {(6,6)};
+		\addplot[red, mark=*, nodes near coords=$ p_2 $,every node near coord/.style={black, anchor=135}, only marks] coordinates {(2,2)};
+		\draw[red, thick] (4,0) -- (4,8);
+		\end{axis}
+		\end{tikzpicture}
+		\subcaption{wydajny podział}\label{qscan:projection-space-bad-good-cut-good}
+	\end{minipage}
+	\caption{Metoda projekcji z projekcją na wymiar $ y $ oraz podział danych ze względu na wymiar $ y $ \subref{qscan:projection-space-bad-good-cut-bad}, $ x $ \subref{qscan:projection-space-bad-good-cut-good}.}\label{qscan:projection-space-bad-good-cut}
+\end{figure}

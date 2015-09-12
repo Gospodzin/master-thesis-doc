@@ -1,0 +1,89 @@
+\documentclass[table]{article}
+
+\documentclass[table, a4paper,
+	lmargin=3cm, rmargin=2cm,
+	tmargin=2cm, bmargin=2cm, 
+	12pt]{mwrep}
+
+\usepackage{setspace} 
+\onehalfspacing
+
+\usepackage[utf8]{inputenc}
+\usepackage{polski}
+\usepackage[polish]{babel}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+
+\usepackage{braket}
+
+\usepackage{siunitx}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usepackage{pgfplots}
+\pgfplotsset{compat=newest, grid=major,	grid style={dashed,gray!30}, legend cell align=left}
+\usepgfplotslibrary[units,groupplots]
+\pgfkeys{
+	/pgf/number format/set thousands separator={\,}
+}
+
+\usepackage[labelfont=bf]{caption}
+\usepackage{subcaption}
+\captionsetup{subrefformat=parens}
+\usepackage[hidelinks]{hyperref}
+
+\usepackage[ruled,linesnumbered,noline]{algorithm2e}
+\SetAlgorithmName{Algorytm}{}
+
+\usepackage{commath}
+
+%%% fix for \lll
+\let\babellll\lll
+\let\lll\relax
+\usepackage{amssymb}
+%%% fix for \lll
+\let\mathlll\lll
+\let\lll\babellll
+
+\usepackage{verbatim}
+
+\usepackage{tkz-euclide}
+\usetkzobj{all}
+
+\usepackage{amsthm}
+\usepackage{framed}
+\usepackage{commath}
+
+\usepackage{wasysym}
+
+\usepackage{tkz-graph}
+
+% my commands
+\newcommand{\myhyperref}[2]{\hyperref[#1]{\mbox{#2 \ref*{#1}}}}
+\newcommand{\varImgWidth}{.6\linewidth}
+
+\title{PDYM - przygotowanie pracy dyplomowej magisterskiej}
+\author{Marcin Król}
+\date{\today}
+
+\begin{document}
+	\renewcommand{\tablename}{Tabela}
+	\SetKwInOut{KwIn}{Wejście}
+	\SetKwInOut{KwOut}{Wyjście}
+	\let\oldnl\nl
+	\newcommand{\nonl}{\renewcommand{\nl}{\let\nl\oldnl}}
+	
+	\maketitle
+
+
+	\input{assets/intro}
+	\input{assets/odc}
+	\clearpage
+	\input{assets/ti-vs-p}
+	\clearpage
+	\input{assets/qscan}
+	
+	\clearpage
+	\bibliographystyle{plplain} 
+	\bibliography{assets/bibliography}
+\end{document}

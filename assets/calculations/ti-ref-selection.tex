@@ -1,0 +1,54 @@
+\begin{leftbar}
+	\begin{tikzpicture}
+	\coordinate (R) at (.6,1);
+	\coordinate (A) at (-1.5,0);
+	\coordinate (B) at (1.5,0);
+	\path let \p1=(R) in coordinate (H) at (\x1, 0);
+	\coordinate (S) at ($.5*($(A)+(B)$)$);
+	\draw (R)--(A)--(B)--cycle;
+	\draw (R)--(H);
+	\tkzLabelSegment[left=-2pt](R,H){\textit{h}}
+	\tkzLabelSegment[above left=-2pt](A,R){\textit{a}}
+	\tkzLabelSegment[above right=-2pt](B,R){\textit{b}}
+	\tkzLabelSegment[below](A,B){\textit{d}}
+	\tkzLabelSegment[above=-2pt](S,H){\textit{x}}
+	\path let \p1 = (R) in node at (\x1-1,\y1+7) (nodeS) {$ R $}; \fill[red](R) circle (2pt);
+	\path let \p1 = (A) in node at (\x1-6,\y1-4) (nodeS) {$ A $}; \fill(A) circle (2pt);
+	\path let \p1 = (B) in node at (\x1+6,\y1-4) (nodeS) {$ B $}; \fill(B) circle (2pt);
+	\path let \p1 = (S) in node at (\x1-3,\y1+5) (nodeS) {$ S $}; \fill(S) circle (2pt);
+	\path let \p1 = (H) in node at (\x1+4,\y1-6) (nodeS) {$ H $}; \fill(H) circle (2pt);
+	
+	\tkzMarkRightAngle(R,H,B)
+	
+	\node at (3.5,.5) (node) {
+		$ \left\{
+		\begin{array}{l}
+		S = \frac{A+B}{2} \\
+		x = d(S,H) 
+		\end{array}
+		\right. $
+	};
+	
+	\end{tikzpicture} 
+	
+	$ \Delta_{ref\_R}(A,B)=|a-b| \land a=\sqrt{(\frac{d}{2}+x)^2+h^2} \land b=\sqrt{(\frac{d}{2}-x)^2+h^2} $
+	
+	$\implies 	\Delta_{ref\_R}(A,B)=|\sqrt{(\frac{d}{2}+x)^2+h^2}-\sqrt{(\frac{d}{2}-x)^2+h^2}| $ 
+
+	$ \implies 	\Delta_{ref\_R}(A,B) = \left\{
+	\begin{array}{ll}
+	\sqrt{(\frac{d}{2}+x)^2+h^2}-\sqrt{(\frac{d}{2}-x)^2+h^2} & \mbox{dla } x \ge 0 \\
+	-\sqrt{(\frac{d}{2}+x)^2+h^2}+\sqrt{(\frac{d}{2}-x)^2+h^2} & \mbox{dla } x < 0
+	\end{array}
+	\right\} $
+	
+	$\implies 	\Delta_{ref\_R}(A,B)=\sqrt{(\frac{d}{2}+|x|)^2+h^2}-\sqrt{(\frac{d}{2}-|x|)^2+h^2} $
+	
+	$ \implies 	\left\{
+	\begin{array}{ll}
+	\lim{\Delta_{ref\_R}(A,B)} = d& \mbox{dla } |x| \to +\infty\\
+	\Delta_{ref\_R}(A,B) = d & \mbox{dla } h = 0 \land |x| \ge \frac{d}{2} \\
+	\Delta_{ref\_R}(A,B) < d & \mbox{dla } |x| < \frac{d}{2} \,\lor |h| > 0 
+	\end{array}
+	\right. $
+\end{leftbar}

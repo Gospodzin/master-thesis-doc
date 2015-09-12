@@ -1,0 +1,113 @@
+\begin{figure}[h]
+	\newcommand{\drawSeg}[3]{
+		\draw (#1) -- (#2);
+		\draw let \p1 = (#1) in (\x1,\y1-2pt) -- (\x1,\y1+2pt);
+		\draw let \p1 = (#2) in (\x1,\y1-2pt) -- (\x1,\y1+2pt);
+		\tkzLabelSegment[left](#1,#1){\textit{#3}}
+	}
+	\newcommand{\drawSegs}{
+		\coordinate (X1) at (-1,-.5);
+		\path let \p1 = ($(A)-(R)$), \p2=(X1) in coordinate (X2) at ({veclen(\x1,\y1)+\x2},\y2);1
+		\drawSeg{X1}{X2}{a}
+		
+		\path let \p1 = (X1) in coordinate (X1) at (\x1,\y1-10pt);
+		\path let \p1 = ($(B)-(R)$), \p2=(X1) in coordinate (X2) at ({veclen(\x1,\y1)+\x2},\y2);
+		\drawSeg{X1}{X2}{b}
+		
+		\path let \p1 = (X1) in coordinate (X1) at (\x1,\y1-10pt);
+		\path let \p1 = ($(A)-(B)$), \p2=(X1) in coordinate (X2) at ({veclen(\x1,\y1)+\x2},\y2);
+		\drawSeg{X1}{X2}{d}
+		
+		\path let \p1 = (X1) in coordinate (X1) at (\x1,\y1);
+		\path let \p1 = ($(A)-(R)$), \p2=(X1), \p3 = ($(B)-(R)$) in coordinate (X2) at ({veclen(\x1,\y1)+\x2-veclen(\x3,\y3)},\y2);
+		\draw[line width=2pt, red] (X1) -- (X2);
+		\tkzLabelSegment[below](X1,X2){\textit{a-b}}
+	}
+	
+	\begin{minipage}[b]{.27\linewidth}
+		\centering
+		\begin{tikzpicture}
+			\coordinate (R) at (0,2);
+			\coordinate (A) at (-1,0);
+			\coordinate (B) at (1.5,1);
+			\draw (R)--(A)--(B)--cycle;
+			
+			\tkzLabelSegment[right](R,A){\textit{a}}
+			\tkzLabelSegment[below left=-2pt](R,B){\textit{b}}
+			\tkzLabelSegment[above](A,B){\textit{d}}
+			
+			\tkzMarkAngle[fill=orange,size=0.5,opacity=.4](A,R,B)
+			\tkzLabelAngle[pos = 0.35](A,R,B){$\gamma$}
+			
+			\tkzMarkAngle[fill= orange,size=0.8cm,opacity=.4](B,A,R)
+			\tkzLabelAngle[pos = 0.6](B,A,R){$\alpha$}
+
+			\tkzMarkAngle[fill= orange,size=0.7cm,opacity=.4](R,B,A)
+			\tkzLabelAngle[pos = -0.5](R,B,A){$\beta$}
+			
+			\path let \p1 = (R) in node at (\x1-1,\y1+7) (nodeS) {$ R $}; \fill[red](R) circle (2pt);
+			\path let \p1 = (A) in node at (\x1-6,\y1-4) (nodeS) {$ A $}; \fill(A) circle (2pt);
+			\path let \p1 = (B) in node at (\x1+6,\y1) (nodeS) {$ B $}; \fill(B) circle (2pt);
+			
+			\drawSegs
+		\end{tikzpicture}
+	\end{minipage}
+	\begin{minipage}[b]{.28\linewidth}
+		\centering
+		\begin{tikzpicture}
+		\coordinate (R) at (0.8,2.5);
+		\coordinate (A) at (-1,0);
+		\coordinate (B) at (1.5,1);
+		\draw (R)--(A)--(B)--cycle;
+		
+		\tkzLabelSegment[right](R,A){\textit{a}}
+		\tkzLabelSegment[below left=-3pt](R,B){\textit{b}}
+		\tkzLabelSegment[above](A,B){\textit{d}}
+		
+		\tkzMarkAngle[fill=orange,size=0.5,opacity=.4](A,R,B)
+		\tkzLabelAngle[pos = 0.35](A,R,B){$\gamma$}
+		
+		\tkzMarkAngle[fill= orange,size=0.8cm,opacity=.4](B,A,R)
+		\tkzLabelAngle[pos = 0.6](B,A,R){$\alpha$}
+		
+		\tkzMarkAngle[fill= orange,size=0.5cm,opacity=.4](R,B,A)
+		\tkzLabelAngle[pos = -0.3](R,B,A){$\beta$}
+		
+		\path let \p1 = (R) in node at (\x1-1,\y1+7) (nodeS) {$ R $}; \fill[red](R) circle (2pt);
+		\path let \p1 = (A) in node at (\x1-6,\y1-4) (nodeS) {$ A $}; \fill(A) circle (2pt);
+		\path let \p1 = (B) in node at (\x1+6,\y1) (nodeS) {$ B $}; \fill(B) circle (2pt);
+		
+		\drawSegs
+		\end{tikzpicture}
+	\end{minipage}
+	\begin{minipage}[b]{.45\linewidth}
+		\centering
+		\begin{tikzpicture}
+		\coordinate (R) at (2,3);
+		\coordinate (A) at (-1,0);
+		\coordinate (B) at (1.5,1);
+		\draw (R)--(A)--(B)--cycle;
+		
+		\tkzLabelSegment[right](R,A){\textit{a}}
+		\tkzLabelSegment[below left=-1.5pt](R,B){\textit{b}}
+		\tkzLabelSegment[above](A,B){\textit{d}}
+		
+		\tkzMarkAngle[fill=orange,size=0.7,opacity=.4](A,R,B)
+		\tkzLabelAngle[pos = 0.55](A,R,B){$\gamma$}
+		
+		\tkzMarkAngle[fill= orange,size=0.8cm,opacity=.4](B,A,R)
+		\tkzLabelAngle[pos = 0.6](B,A,R){$\alpha$}
+		
+		\tkzMarkAngle[fill= orange,size=0.5cm,opacity=.4](R,B,A)
+		\tkzLabelAngle[pos = -0.3](R,B,A){$\beta$}
+		
+		\path let \p1 = (R) in node at (\x1-1,\y1+7) (nodeS) {$ R $}; \fill[red](R) circle (2pt);
+		\path let \p1 = (A) in node at (\x1-6,\y1-4) (nodeS) {$ A $}; \fill(A) circle (2pt);
+		\path let \p1 = (B) in node at (\x1+6,\y1) (nodeS) {$ B $}; \fill(B) circle (2pt);
+		
+		\drawSegs
+		\end{tikzpicture}
+	\end{minipage}
+	
+	\caption{Szacowanie odległości między $ A $ i $ B $ za pomocą nierówności trójkąta z punktem referencyjnym $ R  $.}\label{ti-angle}
+\end{figure}

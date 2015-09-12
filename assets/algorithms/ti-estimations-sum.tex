@@ -1,0 +1,11 @@
+\begin{algorithm}
+	\caption{Wyznaczanie sumy szacowań odległości.}
+	
+	\DontPrintSemicolon
+	\KwIn{$D$ - data points, $ r $ - reference point}
+	\KwOut{$ tid $ - sum of distance estimations for each pair of data points}
+	$R \gets \set{v | v=\norm{w-r}, w \in D}$ \tcp*{odległości punktów od $ r $}
+	$ S \gets sort(R)$ \tcp*{$ R $ posortowane rosnąco}
+	$ S(i) \gets i $-th element of S\;	
+	$ tid \gets \sum_{i=1}^{|S|}S(i)*(2i-1-|S|)$\;
+\end{algorithm}

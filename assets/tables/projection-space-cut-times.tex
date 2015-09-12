@@ -1,0 +1,11 @@
+\begin{table}
+	\centering
+	\begin{tabular}{ c | c | c | c |  c | c | c | c | c | }
+		$ name $ & $ n_{div} $ & $ n_p $ & $ \varepsilon $ & $ \mu $ & $ T $ & $ T_{h1} $ & $ T_{h2} $ & $ T_{h1}+T_{h2} $\\ \hline
+		 sequoia  & 0 & 1 & 5000 & 4 & 0.91 & 0.35 & 0.34 & 0.69 \\ \hline
+		 birch  & 0 & 1 & 4000 & 4 & 2.10 & 0.58 & 0.59 & 1.17 \\ \hline
+		 cup98  & 36 & 37 & 10 & 4 & 13.01 & 8.92 & 2.91 & 11.83 \\ \hline
+		covtype & 9 & 5 & 40 & 4 & 611.63 & 194.83 & 126.66 & 321.49 \\ \hline
+	\end{tabular}
+	\caption{Czasy grupowania algorytmem DBSCAN z metodą projekcji na wymiarze $ n_p $ dla rzeczywistych zbiorów bez podziału oraz z podziałem wzdłuż wymiaru $ n_{div} $, na dwie części: mniejsze od mediany oraz większe. Wymiary zostały dobrane na podstawie maksymalizacji średniego bezwzględnego odchylenia. $ T $ - czas grupowania całego zbioru, $ T_{h1/h2} $ - czasy grupowania części}\label{qscan:projection-space-cut-times}
+\end{table}

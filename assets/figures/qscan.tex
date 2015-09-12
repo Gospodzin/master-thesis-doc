@@ -1,0 +1,29 @@
+\begin{figure}
+	\centering
+	\begin{tikzpicture}
+		\begin{axis}[
+			width=\varImgWidth,
+			xlabel=x, ylabel=y,
+			xmin=0, ymin=0, xmax=12, ymax=8
+			]
+			
+			\filldraw[fill=blue!40, draw=none, opacity=.5] (0,0) rectangle (7.5,8);
+			\filldraw[fill=green!40, draw=none, opacity=.5] (4.5,0) rectangle (12,8);
+			
+			\def \mydraw{\draw[font=\footnotesize,thick,|-|]}
+			
+			\mydraw (4.5,6.5) -- node[above] {$ RE $} node[below] {$ \varepsilon $} ++(1,0);	
+			\mydraw (6.5,6.5) -- node[above] {$ LE $} node[below] {$ \varepsilon $} ++(1,0);	
+						
+ 			\mydraw (5.5,5.3) -- node[above] {$ MC $} node[below] {$ \varepsilon $} ++(1,0);	
+ 			\mydraw (4.5,3.8) -- node[above] {$ M $} node[below] {$ 3\varepsilon $} ++(3,0);	
+			 			
+			\mydraw[-|] (0,.5) --  node[above] {$ L $} ++(7.5,0);	
+			\mydraw[-|] (0,1.9) -- node[above] {$ LC $} ++(6.5,0);	
+			
+			\mydraw[|-] (4.5,1.2) -- node[above] {$ R $} ++(7.5,0);	
+			\mydraw[|-] (5.5,2.6) -- node[above] {$ RC $} ++(6.5,0);
+		\end{axis}
+	\end{tikzpicture}
+	\caption{Pomocnicze definicje podzbiorów zbioru danych dla $ b = 6$, $ d=x $. Zachodzi: \mbox{$ M = L \cap R  $}, $ MC = LC \cap RC $, $ M = LE \cup MC \cup RE $}\label{qscan:qscan}
+\end{figure}

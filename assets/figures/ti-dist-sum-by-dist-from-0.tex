@@ -1,0 +1,16 @@
+\begin{figure}[h]
+	\centering
+	\begin{tikzpicture}
+	\begin{axis}[
+	width=\varImgWidth,
+	xlabel=położenie $ r $ na osi,	
+	ylabel=suma szacowań,
+	]
+	\addplot[blue, mark=*] table[x={dist-from-0}, y={ti-dist-sum-3}]{assets/data/ti-dist-sum-by-dist-from-0.dat};
+	\addplot[red, mark=*] table[x={dist-from-0}, y={ti-dist-sum-4}]{assets/data/ti-dist-sum-by-dist-from-0.dat};
+	\addplot[green, mark=*] table[x={dist-from-0}, y={ti-dist-sum-5}]{assets/data/ti-dist-sum-by-dist-from-0.dat};
+	\legend{$ n=3 $, $ n=4 $, $ n=5 $}
+	\end{axis}
+	\end{tikzpicture}
+	\caption{Suma szacowań w zależności od wymiarowości $ n $ oraz położenia $ r $ na osi. Maks w $ 1.5$,  $1.8$,  $2.1 $ dla odpowiednio $ n=3$,  $n=4$,  $n=5$. }\label{ti:ti-dist-sum-by-dist-from-0}
+\end{figure}
