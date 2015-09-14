@@ -1,0 +1,49 @@
+\begin{algorithm}
+ 	\caption{DBSCAN}\label{odc:odc}
+
+	\DontPrintSemicolon
+	
+	\SetKwFunction{dbscan}{dbscan}
+	\SetKwFunction{expand}{expandcluster}
+	
+	\setcounter{AlgoLine}{0}
+	\nonl\SetKwProg{myproc}{Wejście}{}{}
+	\myproc{}{
+		$D$ - zbiór danych \;
+		$\varepsilon $ - promień otoczenia \;
+		$\mu $ - próg liczności otoczenia \;
+	}
+	\setcounter{AlgoLine}{0}
+	\nonl\SetKwProg{myproc}{Wyjście}{}{}
+	\myproc{}{
+		$D$ z każdym punktem z przypisaną etykietą grupy albo szumu\;
+	}
+	
+	
+	\setcounter{AlgoLine}{0}
+	\nonl\SetKwProg{myproc}{Definicje}{}{}
+	\myproc{}{
+		$ nextCid() $ - zwraca nową unikalną etykietę\;
+		$ noise $ - etykieta szumu\;
+		\textit{undefined} - nieokreślona etykieta grupy\;
+		$ cid(v) $ - etykieta grupy punktu $ v $\;
+		$ N_\varepsilon(v) $ - sąsiedztwo punku $ v $ (\myhyperref{eps-neighbourhood}{wyrażenie})
+	}
+	\nonl\SetKwProg{myalg}{Algorytm}{}{}
+	\myalg{\dbscan{$D$, $\varepsilon$, $\mu$}}{
+		$ cid \gets nextCid() \;$ \tcp*{etykieta grupy}
+		\ForEach{v \textbf{in} D}{
+			\If{cid(v) = undefined}{
+				\lIf{\expand{D, v, cid, $ \varepsilon $, $ \mu $}}{
+					$ cid \gets nextCid() $
+				}
+			}
+		}
+	}
+	\setcounter{AlgoLine}{0}
+	\nonl\SetKwProg{myproc}{Procedura}{}{}
+	\myproc{\expand{D, v, cid, $ \varepsilon $, $ \mu $}}{
+		$ seeds \gets N_\varepsilon{v} $
+	}
+
+\end{algorithm}

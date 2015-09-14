@@ -1,0 +1,20 @@
+\begin{figure}
+	\centering
+	\begin{tikzpicture}
+		\newcommand{\varDataFile}{assets/data/qscan-time-by-eps-delta.dat}
+		\begin{axis}[xmin=0, xmax=10, 
+			ymin=0, ymax=30, 
+			samples=50, 
+			width=\varImgWidth, 
+			xlabel= $ \delta $,
+			ylabel= czas grupowania, y unit=\si{\s}
+			]
+			\addplot table[x={delta}, y={t-eps-130}]{\varDataFile};
+			\addplot table[x={delta}, y={t-eps-90}]{\varDataFile};
+			\addplot table[x={delta}, y={t-eps-50}]{\varDataFile};
+			\legend{$ \varepsilon = 50 $, $ \varepsilon = 90 $, $ \varepsilon = 130 $}
+		\end{axis}
+	\end{tikzpicture}
+	\caption{Czas grupowania \myhyperref{qscan:qscan}{algorytmem} w zależności od parametru $ \delta $. Testy wykonano z parametrami $ \mu = 5 $, $ \nu = 1 $. Została zastosowana implementacja bez zrównoleglenia linii 7, 8. Testy zostały przeprowadzone na próbie $ 50000 $ punktów z rzeczywistego $ 56 $-wymiarowego zbioru danych. Dla $ \delta = 0 $ zostało wykonane grupowanie z wykorzystaniem metody projekcji bez dzielenia danych.} 
+	\label{fig:qscan-time-by-eps-delta}
+\end{figure}

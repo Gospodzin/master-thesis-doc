@@ -2,14 +2,27 @@
  	\caption{Zrównoleglony DBSCAN.}\label{qscan:algo:qscan}
 
 	\DontPrintSemicolon
-	\KwIn{$\varepsilon$, $\mu$, $ \nu $, $ \delta $, $D$}
-	\KwOut{$D$ z każdym punktem z przypisaną etykietą grupy albo szumu}
 	
 	\SetKwFunction{qscan}{qscan}
 	\SetKwFunction{selectDivDim}{selectPartitionDimension}
 	\SetKwFunction{performDbscan}{cluster}
 	\SetKwFunction{pdbscan}{pdbscan}
 	\SetKwFunction{merge}{merge}
+	
+	\setcounter{AlgoLine}{0}
+	\nonl\SetKwProg{myproc}{Wejście}{}{}
+	\myproc{}{
+		$D$ - zbiór danych \;
+		$\varepsilon$, $\mu$ - parametry DBSCAN \;
+		$ \nu $ - liczba wymiarów wykorzystywana przez metodę projekcji \;
+		$ \delta $ - głębokość podziału \;
+	}
+	\setcounter{AlgoLine}{0}
+	\nonl\SetKwProg{myproc}{Wyjście}{}{}
+	\myproc{}{
+		$D$ z każdym punktem z przypisaną etykietą grupy albo szumu\;
+	}
+
 	
 	\setcounter{AlgoLine}{0}
 	\nonl\SetKwProg{myproc}{Definicje}{}{}
@@ -23,6 +36,7 @@
 		$ b \gets median(D_d)$ \;
 		$ L \gets \set{v \in D | v_d \le b + \frac{3}{2}\varepsilon} $ \;
 		$ R \gets \set{v \in D | v_d \ge b - \frac{3}{2}\varepsilon} $ \;
+		\tcp{kolejne dwie linie mogą być wykonane równolegle}
 		\performDbscan{$ L $, $ \varepsilon $, $ \mu $, $ \nu $, $ \delta $} \;
 		\performDbscan{$ R $, $ \varepsilon $, $ \mu $, $ \nu $, $ \delta $} \;
 		\merge{L, R, D, $ \varepsilon $, b, d}\;}{}
@@ -34,12 +48,7 @@
 		$ M \gets \set{mad(i) | i \in \set{1,\dots,\dim(D)}} $\;
 		$ Ms \gets (x_j)_{j=1}^{\dim(D)} \mid \forall{i}\forall{j}(i < j \implies x_i \ge x_j) \land \set{x_k}_{k=1}^{\dim(D)}=M$ \; 
 		$ dmad(i) $ \tcp*{$ j $ takie, że $ mad(j) $ jest $i$-tym element $ Ms $}
-		
-		\lIf{$ \nu + 1 \le \dim(D) $}{
-			$ d \gets dmad(\nu + 1)$
-		} \lElse {
-			$ d \gets dmad(\dim(D)) $
-		}
+		$ d \gets dmad(1) $ \;
 		\KwRet{d} \;}
 	\setcounter{AlgoLine}{0}
 	\nonl\SetKwProg{myproc}{Procedura}{}{}
