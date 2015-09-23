@@ -6,6 +6,12 @@
 \usepackage{setspace} 
 \onehalfspacing
 
+\makeatletter
+\renewcommand\@makefntext[1]{\leftskip=2em\hskip-.79em\@makefnmark\ #1}
+\makeatother
+
+
+
 \usepackage{float}
 \restylefloat{table}
 
@@ -64,6 +70,8 @@
 % my commands
 \newcommand{\myhyperref}[2]{\hyperref[#1]{\mbox{#2 \ref*{#1}}}}
 \newcommand{\varImgWidth}{.6\linewidth}
+\newcommand{\f}{\hspace{-0.1em}f\hspace{-0.1em}}
+\newtheorem{definition}{Definicja}
 
 \title{PDYM - przygotowanie pracy dyplomowej magisterskiej}
 \author{Marcin Król}
@@ -77,12 +85,13 @@
 	\newcommand{\nonl}{\renewcommand{\nl}{\let\nl\oldnl}}
 	
 	%\maketitle
-  \tableofcontents
+  %\tableofcontents
 
 
 	%\input{assets/intro}
 	
 	\input{assets/clustering-algorithms}
+	%\chapter{Robocze}
 	%\input{assets/odc}
 
 	%\input{assets/ti-vs-p}

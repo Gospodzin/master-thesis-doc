@@ -1,0 +1,20 @@
+\section{SUBCLU}
+SUBCLU jest algorytmem grupowania gęstościowego bazującym na DBSCAN. Pozwala na wykrycie grup znajdujących się we wszystkich podprzestrzeniach grupowanego zbioru danych, gdzie podprzestrzeń jest rozumiana jako podzbiór atrybutów grupowanych obiektów. Grupowanie w podprzestrzeniach jest szczególnie przydatne gdy mamy do czynienia z wysoko-wymiarowymi danymi. Wysoko-wymiarowe dane są z reguły rzadko rozmieszczone w przestrzeni, a niektóre atrybuty mogą zaszumiać grupy istniejące w podprzestrzeniach, dlatego zdarza się, że grupowanie wysoko-wymiarowych danych nie daje sensownych rezultatów. 
+
+\subsection{Definicje}
+
+Zakładamy, że grupowany jest $ d $ wymiarowy zbiór punktów $ D $. Przestrzeń atrybutów zbioru $ D $ można oznaczyć $ A=\set{a_1,\dots,a_d} $. Podprzestrzenią będzie nazywany każdy podzbiór przestrzeni atrybutów $ S \subseteq A $. Projekcja punktu $ p $ na podprzestrzeń $ S $ będzie oznaczana $\pi_S(p) $. 
+
+Definicje zawarte w podrozdziale o DBSCAN zostają zapożyczone z modyfikacją umożliwiającą operacje na podprzestrzeni $ S $.
+
+\begin{equation}
+\begin{array}{c}
+	N_{D,\varepsilon}(p) = \set{q \in D | d(p, q) \le \varepsilon}\\
+	core_{D,\varepsilon,\mu}(p) \iff |N_{D,\varepsilon}(p)| \ge \mu\\
+	dirreach_{D,\varepsilon,\mu}(p, q) \iff p \in N_{D,\varepsilon}(q) \land core_{D,\varepsilon,\mu}(q)\\
+		edge_{D,\varepsilon,\mu}(p) \iff \neg core_{D,\varepsilon,\mu}(p) \land dirreach_{D,\varepsilon,\mu}(p,q)\\
+\end{array}
+\end{equation}
+
+\subsection{Algorytm}
+Najprostszym rozwiązaniem problemu znalezienia grup we wszystkich podprzestrzeniach zbioru D jest zastosowanie algorytmu DBSCAN do znalezienia grup w każdej z podprzestrzeni oddzielnie. W ten sposób niewątpliwie można znaleźć wszystkie grupy istniejące w podprzestrzeniach zbioru $ D $. Istotnym problemem jest jednak liczba istniejących podprzestrzeni \mbox{zbioru $ D $}. Jeśli przyjmiemy, że zbiór $ D $ jest $ d $ wymiarowy, to zbiór $ D $ posiada $ 2^n $ podprzestrzeni. Grupowanie algorytmem DBSCAN trzeba przeprowadzić w każdej z podprzestrzeni poza $ 0 $-wymiarową podprzestrzenią, więc znalezienie grup we wszystkich podprzestrzeniach wymaga $ 2^n-1 $ grupowań algorytmem DBSCAN. Jest to istotne ograniczenie uniemożliwiające zastosowanie tej metody dla wysoko-wymiarowych danych.

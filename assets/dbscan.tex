@@ -1,67 +1,89 @@
-
-Istniejące algorytmu grupowania można podzielić ze względu na to jak definiują pojęcie grupy. Jedną z klas algorytmów grupowania są właśnie algorytmy grupowania gęstościowego. Jak wskazuje nazwa, grupy określa się na podstawie lokalnej gęstości punktów, co zgadza się z intuicyjnym pojęciem grupy.\par
-
-Część algorytmów grupowania gęstościowego opiera się na dzieleniu przestrzeni na siatkę komórek, gdzie grupy określane są na podstawie uśrednionej gęstości wewnątrz tychże komórek. O ile takie podejście jest proste i wydajne, to nie jest dokładne, a wyniki grupowania mogą zależeć od rozmieszczenia siatki. Algorytm DBSCAN reprezentuje podejście, które rozwiązuje te problemy. Przynależność do grupy jest rozstrzygana dla każdego punktu oddzielnie, więc grupowanie jest dokładne co do punktu. Co więcej, wyniki są deterministyczne z dokładnością do tak zwanych punktów brzegowych.\par
-Definicja grupy zaproponowana w DBSCAN okazała się na tyle skuteczna, że powstały liczne algorytmy pochodne opierające się na tej samej lub podobnej definicji grupy. Takimi algorytmami są SUBCLU oraz PREDECON. Obydwa należą do klasy algorytmów grupowania w podprzestrzeniach, co oznacza, że są w stanie wyznaczać grupy w podzbiorach atrybutów grupowanych obiektów.\par
-W tym rozdziale zostaną przedstawione trzy wspomniane wcześniej algorytmy: DBSCAN, SUBCLU oraz PREDECON.
-
 \section{DBSCAN}
-DBSCAN jest popularnym algorytmem grupowania gęstościowego. Najważniejsze jego zalety wymienione w \cite{dbscan} to tworzenie grup o dowolnym kształcie oraz możliwość doboru parametrów przy niewielkiej wiedzy o zbiorze danych. Grupy tworzone są na podstawie lokalnej gęstości punktu rozumianej jako liczba punktów w otoczeniu punktu, dzięki czemu tworzone są grupy o intuicyjnych kształtach.
+DBSCAN jest popularnym algorytmem grupowania gęstościowego. Najważniejsze jego zalety wymienione w \cite{dbscan} to tworzenie grup o dowolnym kształcie oraz możliwość doboru parametrów przy niewielkiej wiedzy o zbiorze danych. Grupy tworzone są na podstawie lokalnej gęstości punktu rozumianej jako liczba punktów w otoczeniu punktu, dzięki czemu tworzone są grupy o intuicyjnych kształtach. Ważną cechą DBSCAN jest też pojęcie punktów szumu, czyli takich, które nie pasują do żadne grupy. Punkty szumu mogą być cenne na przykład przy wykrywaniu anomalii.
 
-Zakładamy, że grupowany jest zbiór punktów $ D $. Na potrzebę algorytmu definiuje się pojęcie $ \varepsilon $-otoczenia punktu $ p \in D $. Jest to zbiór punktów znajdujących się w odległości nie większej niż punkt, dla którego jest wyznaczane otoczenie. Dalej $ \varepsilon $-otoczenie punktu $ p $ będzie oznaczane $ N_\varepsilon(p) $.
+\subsection{Definicje}
+Zakładamy, że grupowany jest zbiór punktów $ D $. Na potrzebę algorytmu definiuje się pojęcie \textit{$ \varepsilon $-otoczenia} punktu $ p \in D $. Jest to zbiór punktów $ q \in D $ znajdujących się w odległości nie większej niż $ \varepsilon $ od punktu $ p $, dla którego jest wyznaczane $\varepsilon$-otoczenie. Dalej $\varepsilon$-otoczenie punktu $ p $ w zbiorze $ D $ będzie oznaczane $ N_{D,\varepsilon}(p) $.
 \begin{equation}\label{eps-neighbourhood}
-	N_\varepsilon(p) = \set{q \in D | d(p, q) \le \varepsilon}
+	N_{D,\varepsilon}(p) = \set{q \in D | d(p, q) \le \varepsilon}
 \end{equation}
 
-Punkt, który posiada w swoim otoczeniu $ N_\varepsilon(p) $ conajmniej $ \mu $ punktów jest nazywany punktem rdzeniowym.
+Punkt $ p $, który posiada w swoim $ \varepsilon $-otoczeniu $ N_{D,\varepsilon}(p) $ co najmniej $ \mu $ punktów jest nazywany \textit{punktem rdzeniowym} ($ core_{D,\varepsilon,\mu}(p) $).
 \begin{equation}\label{core-point}
-	core_{\varepsilon,\mu}(p) \iff |N_\varepsilon(p)| \le \mu
+	core_{D,\varepsilon,\mu}(p) \iff |N_{D,\varepsilon}(p)| \ge \mu
 \end{equation}
+
 \input{assets/figures/core-edge-point}
 
-Dalej, na potrzebę definicji grupy wprowadza się pojęcie bezpośredniego zasięgu gęstościowego. Jest to niesymetryczna relacja, która zachodzi jeśli punkt znajduje się w $ \varepsilon $-otoczeniu punktu rdzeniowego. Punkt $ p $ jest w bezpośrednim zasięgu gęstościowym punktu $ q $, jeśli punkt $ q $ jest punktem rdzeniowym i $ p $ znajduje się w $ \varepsilon $-otoczeniu punktu $ q $.
+Dalej, na potrzebę definicji grupy wprowadza się pojęcie \textit{bezpośredniej gęstościowej osiągalności}. Jest to niesymetryczna relacja, która zachodzi jeśli punkt $ p $ znajduje się w $ \varepsilon $-otoczeniu punktu rdzeniowego $ q $. Punkt $ p $ jest bezpośrednio gęstościowo osiągalny z punktu $ q $, jeśli punkt $ q $ jest punktem rdzeniowym i $ p $ znajduje się w $ \varepsilon $-otoczeniu punktu $ q $ ($ dirreach_{D,\varepsilon,\mu}(p, q) $).
 \begin{equation} \label{direct-reachability}
-	dirreach_{\varepsilon,\mu}(p, q) \iff p \in N_\varepsilon(q) \land core_{\varepsilon,\mu}(q)
+	dirreach_{D,\varepsilon,\mu}(p, q) \iff p \in N_{D,\varepsilon}(q) \land core_{D,\varepsilon,\mu}(q)
 \end{equation}
-To, że $ p $ jest w bezpośrednim zasięgu gestościowym $ q $ nie determinuje, \mbox{że $ q $ jest} w bezpośrednim zasięgu gęstościowym $ p $.
+To, że $ p $ jest bezpośrednio gęstościowo osiągalny z $ q $ nie determinuje, \mbox{że $ q $ jest} bezpośrednio gęstościowo osiągalny z $ p $.
 \begin{equation} \label{direct-reachability-asymmetry}
-	dirreach_{\varepsilon,\mu}(p, q) \centernot \implies dirreach_{\varepsilon,\mu}(q, p)
+	\exists_D\;\neg\forall_{p,q\in D}\;dirreach_{D,\varepsilon,\mu}(p, q) \implies dirreach_{D,\varepsilon,\mu}(q, p)
 \end{equation}
 
-Punkt, który jest w bezpośrednim zasięgu gęstościowym innego punktu, ale sam nie jest punktem rdzeniowym jest nazywany punktem brzegowym.
+\pagebreak Punkt $ p $, który jest bezpośrednio gęstościowo osiągalny z innego \mbox{punktu $ q $}, ale sam nie jest punktem rdzeniowym, jest nazywany \textit{punktem brzegowym} ($ edge_{D,\varepsilon,\mu}(p) $).
 \begin{equation}\label{edge-point}
-	edge_{\varepsilon,\mu}(p) \iff \neg core_{\varepsilon,\mu}(p) \land dirreach_{\varepsilon,\mu}(p,q)
+	edge_{D,\varepsilon,\mu}(p) \iff \neg core_{D,\varepsilon,\mu}(p) \land dirreach_{D,\varepsilon,\mu}(p,q)
 \end{equation}
 
-Jeśli punkt $ p $ jest w bezpośrednim zasięgu gęstościowym $ q $, to jest też w zasięgu gęstościowym $ q $. 
+Jeśli punkt $ p $ jest bezpośrednio gęstościowo osiągalny z $ q $, to jest też \textit{gęstościowo osiągalny} z $ q $ ($ reach_{D,\varepsilon,\mu}(p, r) $). 
 \begin{equation}
-	dirreach_{\varepsilon,\mu}(p, q) \implies reach_{\varepsilon,\mu}(p, q)
+	dirreach_{D,\varepsilon,\mu}(p, q) \implies reach_{D,\varepsilon,\mu}(p, q)
 \end{equation}
-Zasięg gęstościowy jest relacją przechodnią, to znaczy, że jeśli $ p $ jest w zasięgu gęstościowym $ q $  i $ q $ jest w zasięgu gęstościowym $ r $, to $ p $ jest też w zasięgu gęstościowym $ r $.
+Gęstościowa osiągalność jest relacją przechodnią, to znaczy, że jeśli $ p $ jest gęstościowo osiągalne z $ q $  i $ q $ gęstościowo osiągalne z $ r $, to $ p $ jest też gęstościowo osiągalne z $ r $.
 \begin{equation}
-	reach_{\varepsilon,\mu}(p, q) \land reach_{\varepsilon,\mu}(q, r) \implies reach_{\varepsilon,\mu}(p, r)
+	reach_{D,\varepsilon,\mu}(p, q) \land reach_{D,\varepsilon,\mu}(q, r) \implies reach_{D,\varepsilon,\mu}(p, r)
 \end{equation}
-Podobnie jak relacja bezpośredniego zasięgu gęstościowego, zasięg gęstościowy nie jest symetryczny.
+Podobnie jak relacja bezpośredniej gęstościowej osiągalności, gęstościowa osiągalność nie jest relacją symetryczną.
 \begin{equation}
-	reach_{\varepsilon,\mu}(p, q) \centernot \implies reach_{\varepsilon,\mu}(q, p)
+	\exists_D\;\neg\forall_{p,q\in D}\;reach_{D,\varepsilon,\mu}(p, q) \implies reach_{D,\varepsilon,\mu}(q, p)
 \end{equation}
 
-Dwa punkty są gęstościowo połączone jeśli istnieje taki punkt, że obydwa są w jego zasięgu gęstościowym.
+Dwa punkty $ p $ i $ q $ są \textit{gęstościowo połączone}, jeśli istnieje taki punkt $ r $, że obydwa punkty $ p $ i $ q $ są gęstościowo osiągalne z $ r $.
 \begin{equation}
-	reach_{\varepsilon,\mu}(p, q) \land reach_{\varepsilon,\mu}(p, r) \implies connected_{\varepsilon,\mu}(q, r)
+	reach_{D,\varepsilon,\mu}(p, r) \land reach_{D,\varepsilon,\mu}(q, r) \implies connected_{D,\varepsilon,\mu}(p, q)
 \end{equation}
-Łączność gęstościowa jest relacją symetryczną i przechodnią. Jeśli dwa punkty są gęstościowo połączone, to należą do tej samej grupy. Grupę można zdefiniować jako maksymalny zbiór punktów połączonych gęstościowo.
-\begin{equation}
+Łączność gęstościowa jest relacją symetryczną i przechodnią. Jeśli dwa punkty $ p $ i $ q $ są gęstościowo połączone, to należą do tej samej grupy $ C_i $. Grupę $ C_i $ można zdefiniować jako maksymalny zbiór punktów połączonych gęstościowo.
+\begin{equation}\label{eq:cluster-def}
 	\begin{cases} 
-		\forall p, q \in C\,connected_{\varepsilon,\mu}(p,q) \\
-		r \notin C \implies \forall s \in C \,\neg connected_{\varepsilon,\mu}(r, s)
+		\forall_{p, q \in C_i} \, connected_{D,\varepsilon,\mu}(p,q) \\
+		p \notin C_i \implies \forall_{q \in C_i} \, \neg connected_{D,\varepsilon,\mu}(p, q)
 	\end{cases}
 \end{equation}
+
 \input{assets/figures/density-reachability}
 
-Punkty, które nie należą do żadnej z grup nazywa się szumem. Takie punkty nie są gęstościowo połączone z żadnym innym punktem.
+Punkt $ p $, który nie należy do żadnej z grup $ C_i $ nazywa się szumem\linebreak ($ noise_{D,\varepsilon,\mu}(p) $). Taki punkt $ p $ nie jest gęstościowo połączony z żadnym innym punktem $ q $.
 \begin{equation}
-	noise_{\varepsilon,\mu}(p) \iff \forall i \,p\notin C_i \iff \forall q \in D \,\neg connected(p,q)
+	noise_{D,\varepsilon,\mu}(p) \iff \forall_i \;p\notin C_i \iff \forall_{q \in D} \,\neg connected_{D,\varepsilon,\mu}(p,q)
 \end{equation}
+	
+\subsection{Algorytm}
+Na podstawie przedstawionej wcześniej definicji grupy autorzy DBSCAN zaproponowali algorytm grupowania. Wersję tego algorytmu z drobną poprawką prezentuje \myhyperref{alg:dbscan}{algorytm}. Dla zachowania konsekwencji z linią 11 procedury $ expandcluster $, w linii 3 został dodany warunek $ cid(w) = unde\f{}ined $. W ten sposób zachowana jest poprawność wyniku, a $ \varepsilon $-otoczenie jest wyznaczane dla każdego punktu tylko raz, w odróżnieniu od oryginalnej propozycji, gdzie $ \varepsilon $-otoczenie może być wyznaczone więcej niż jeden raz dla tego samego punktu. Dalej nazwa DBSCAN będzie używana w odniesieniu do \myhyperref{alg:dbscan}{algorytmu}.
+
+Okazuje się, że zgodnie z definicją grupy (\myhyperref{eq:cluster-def}{wyrażenie}) punkt $ p $ zbioru danych $ D $ może należeć do więcej niż jednej grupy. Taka sytuacja może mieć miejsce, gdy punkt $ p $ jest gęstościowo połączony z punktami $ q $ i $ r $, ale punkty $ q $ i $ r $ nie są ze sobą gęstościowo połączone.
+\begin{equation}
+  \left. \begin{array}{r}
+		connected_{D,\varepsilon,\mu}(p, q) \\
+		connected_{D,\varepsilon,\mu}(p, r) \\
+		\neg connected_{D,\varepsilon,\mu}(q, r) \\
+	 	q \in C_i \land r \in C_j
+	\end{array} \right\}
+	\implies	p \in C_i \cap C_j
+\end{equation}
+Stąd wynika, że punkt $ p $ musi być punktem brzegowym, ponieważ gdyby był punktem rdzeniowym, to $ q $ i $ r $ byłyby gęstościowo połączone za pośrednictwem $ p $.
+
+Algorytm DBSCAN przypisuje każdy punkt ze zbioru danych do odpowiedniej grupy lub szumu poprzez nadanie punktom właściwych etykiet. Każdemu punktowi jest przypisywana tylko jedna etykieta, więc punkt może należeć do co najwyżej jednej grupy, stąd tworzone grupy nie są ściśle zgodne z definicją grupy (\myhyperref{eq:cluster-def}{wyrażenie}). Punkty brzegowe, które zgodnie z definicją grupy powinny należeć do więcej niż jednej grupy, są przez algorytm DBSCAN przypisywane tylko do jednej z tych grup. Co więcej, to do której z grup zostanie przypisany punkt brzegowy zależy od kolejności przetwarzania punktów zbioru danych.
+
+Warto zwrócić uwagę, że $ \varepsilon $-otoczenie może być wyznaczane za pomocą dowolnej miary odległości lub podobieństwa\footnote{w przypadku miary podobieństwa należy w \myhyperref{eps-neighbourhood}{wyrażeniu} zanegować wartość miary lub odwrócić znak nierówności}. Najczęściej stosowane miary to odległość euklidesowa, Manhattan oraz podobieństwo kosinusowe.
+
+\subsection{Wydajność}
+Najbardziej czasochłonną operacją algorytmu DBSCAN jest wyznaczanie $ \varepsilon $-otoczenia punktu. Dla każdego punktu $ \varepsilon $-otoczenie wyznaczane jest co najwyżej raz\footnote{$ \varepsilon $-otoczenie punktu $ p $ jest wyznaczane tylko jeśli etykieta punktu $ p $ jest nieokreślona, a  po wyznaczeniu $ \varepsilon $-otoczenia zawsze do $ p $ jest przypisywana etykieta}, dlatego jeśli za operację podstawową przyjmiemy wyznaczanie $ \varepsilon $-otoczenia, to w takim sensie złożoność algorytmu będzie liniowa.
+
+Decydująca dla wydajnego działania DBSCAN jest optymalna implementacja wyznaczania $ \varepsilon $-otoczenia. Otoczenie można wyznaczać naiwnie, sprawdzając dla każdego punktu w zbiorze danych czy znajduje się w $ \varepsilon $-otoczeniu punktu, dla którego jest poszukiwane $ \varepsilon $-otoczenie. Wyznaczanie $ \varepsilon $-otoczenia w ten sposób cechuje jednak liniowa złożoność względem liczby punktów w zbiorze danych, co przekłada się na złożoność kwadratową algorytmu DBSCAN. Istnieją metody pozwalające na wydajniejsze znajdowanie $ \varepsilon $-otoczenia i zostaną omówione w kolejnych rozdziałach.
+
+Obliczanie wartości miary odległości lub podobieństwa jest czasochłonnym elementem wyznaczania otoczenia. Stosowane zazwyczaj miary wymagają liniowej liczby operacji względem wymiarowości zbioru danych. Wprowadza to liniową zależność czasu wyznaczania otoczenia od wymiarowości zbioru danych. Zakładając, że w podstawowym wariancie DBSCAN liczba operacji wyznaczania otoczenia jest kwadratowa względem rozmiaru zbioru danych, to za złożoność obliczeniową grupowania zbioru danych D można przyjąć $ \mathcal{O}(dim(D)|D|^2) $.
 
 \input{assets/algorithms/dbscan}

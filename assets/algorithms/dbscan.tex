@@ -1,5 +1,5 @@
 \begin{algorithm}
- 	\caption{DBSCAN}\label{odc:odc}
+ 	\caption{DBSCAN \cite{dbscan}}\label{alg:dbscan}
 
 	\DontPrintSemicolon
 	
@@ -16,26 +16,28 @@
 	\setcounter{AlgoLine}{0}
 	\nonl\SetKwProg{myproc}{Wyjście}{}{}
 	\myproc{}{
-		$D$ z każdym punktem z przypisaną etykietą grupy albo szumu\;
+		każdy punkt zbioru $ D $ ma przypisaną etykietę grupy lub szumu\;
 	}
 	
 	
 	\setcounter{AlgoLine}{0}
 	\nonl\SetKwProg{myproc}{Definicje}{}{}
 	\myproc{}{
-		$ nextCid() $ - zwraca nową unikalną etykietę\;
+		$ nextcid() $ - zwraca nową unikalną etykietę grupy\;
 		$ noise $ - etykieta szumu\;
-		\textit{undefined} - nieokreślona etykieta grupy\;
-		$ cid(v) $ - etykieta grupy punktu $ v $\;
-		$ N_\varepsilon(v) $ - sąsiedztwo punku $ v $ (\myhyperref{eps-neighbourhood}{wyrażenie})
+		$ unde\f{}ined $ - nieokreślona etykieta\;
+		$ cid(v) $ - etykieta punktu $ v $\;
+		$ N_{V,\varepsilon}(v) $ - $ \varepsilon $-otoczenie punktu $ v $ w zbiorze $ V $ (\myhyperref{eps-neighbourhood}{wyrażenie})\;
+		$ any(V) $ - dowolny element zbioru $ V $\;
+		$ core_{V,\varepsilon,\mu}(v) $ - $ v $ jest punktem rdzeniowym w $ V $(\myhyperref{core-point}{wyrażenie})\;
 	}
 	\nonl\SetKwProg{myalg}{Algorytm}{}{}
 	\myalg{\dbscan{$D$, $\varepsilon$, $\mu$}}{
-		$ cid \gets nextCid() \;$ \tcp*{etykieta grupy}
+		$ cid \gets nextcid() \;$ \tcp*{etykieta grupy}
 		\ForEach{v \textbf{in} D}{
-			\If{cid(v) = undefined}{
+			\If{$ cid(v) = unde\f{}ined $}{
 				\lIf{\expand{D, v, cid, $ \varepsilon $, $ \mu $}}{
-					$ cid \gets nextCid() $
+					$ cid \gets nextcid() $
 				}
 			}
 		}
@@ -43,7 +45,25 @@
 	\setcounter{AlgoLine}{0}
 	\nonl\SetKwProg{myproc}{Procedura}{}{}
 	\myproc{\expand{D, v, cid, $ \varepsilon $, $ \mu $}}{
-		$ seeds \gets N_\varepsilon{v} $
+		$ N_v \gets N_{D,\varepsilon}(v) $\;
+		\uIf(\tcp*[f]{$ core_{D,\varepsilon,\mu}(v) $}){$ |N_v| \ge \mu $}{ 
+			$ seeds \gets \set{w \in N_v | cid(w) = unde\f{}ined \land w \neq v} $\;
+			\lForEach{$ w\ \mathbf{in}\ N_v $}{$ cid(w) \gets cid $}
+			\While{$ seeds \neq \emptyset $} {
+				$ w \gets any(seeds) $\;
+				$ seeds \gets seeds \setminus \set{w} $\;
+				$ N_w \gets N_{D,\varepsilon}(w) $\;
+				\If($ \mathbf{foreach}\ x\ \mathbf{in}\ N_w $ \tcp*[f]{$ core_{D,\varepsilon,\mu}(w) $}){$ |N_w| \ge \mu $}{%
+					\If{$ cid(x)\ \mathbf{in}\ \set{unde\f{}ined, noise} $}{
+						\lIf{$ cid(x) = unde\f{}ined $}{$ seeds \gets seeds \cup \set{x} $}	
+						$ cid(x) \gets cid $
+					}
+				}
+			}
+			\KwRet{true}\;
+		}\Else{
+			$ cid(v) \gets noise $\;
+			\KwRet{false}\;
+		}
 	}
-
 \end{algorithm}

@@ -1,3 +1,11 @@
 \chapter{Algorytmy grupowania gęstościowego}
 
+Istniejące algorytmu grupowania można podzielić ze względu na to jak definiują pojęcie grupy. Jedną z klas algorytmów grupowania są właśnie algorytmy grupowania gęstościowego. Jak wskazuje nazwa, grupy określa się na podstawie lokalnej gęstości punktów, co zgadza się z intuicyjnym pojęciem grupy.\par
+
+Część algorytmów grupowania gęstościowego opiera się na dzieleniu przestrzeni na siatkę komórek, gdzie grupy określane są na podstawie uśrednionej gęstości wewnątrz tychże komórek. O ile takie podejście jest proste i wydajne, to nie jest dokładne, a wyniki grupowania mogą zależeć od rozmieszczenia siatki. Algorytm DBSCAN reprezentuje podejście, które rozwiązuje te problemy. Przynależność do grupy jest rozstrzygana dla każdego punktu oddzielnie, więc grupowanie jest dokładne co do punktu. Co więcej, wyniki są deterministyczne z dokładnością do tak zwanych punktów brzegowych.\par
+Definicja grupy zaproponowana w DBSCAN okazała się na tyle skuteczna, że powstały liczne algorytmy pochodne opierające się na tej samej lub podobnej definicji grupy. Takimi algorytmami są SUBCLU oraz PREDECON. Obydwa należą do klasy algorytmów grupowania w podprzestrzeniach, co oznacza, że są w stanie wyznaczać grupy w podzbiorach atrybutów grupowanych obiektów.\par
+W tym rozdziale zostaną przedstawione trzy wspomniane wcześniej algorytmy: DBSCAN, SUBCLU oraz PREDECON.
+
 \input{assets/dbscan}
+
+\input{assets/subclu}
