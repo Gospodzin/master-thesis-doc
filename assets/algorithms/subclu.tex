@@ -1,0 +1,70 @@
+\begin{algorithm}
+ 	\caption{SUBCLU \cite{subclu}}\label{alg:subclu}
+
+	\DontPrintSemicolon
+	
+	\SetKwFunction{subclu}{subclu}
+	\SetKwFunction{generateCandidates}{generageCandidateSubspaces}
+	\SetKwFunction{dbscan}{dbscan}
+	
+	\setcounter{AlgoLine}{0}
+	\nonl\SetKwProg{myproc}{Wejście}{}{}
+	\myproc{}{
+		$D$ - zbiór danych \;
+		$\varepsilon $ - promień otoczenia \;
+		$\mu $ - próg liczności otoczenia \;
+	}
+	\setcounter{AlgoLine}{0}
+	\nonl\SetKwProg{myproc}{Wyjście}{}{}
+	\myproc{}{
+		grupy istniejące we wszystkich podprzestrzeniach zbioru $ D $\;
+	}
+	
+	\setcounter{AlgoLine}{0}
+	\nonl\SetKwProg{myproc}{Definicje}{}{}
+	\myproc{}{
+		$ C^S $ - zbiór grup w podprzestrzeni $ S $\;
+		$ S_k $ - zbiór wszystkich $ k $ wymiarowych podprzestrzeni zawierających przynajmniej jedeną grupę\;
+		$ C_k $ - zbiór wszystkich zbiorów grup w podprzestrzeniach o wymiarowości $ k $, $ \set{C^S | |S|=k} $ \;
+	}
+	\nonl\SetKwProg{myalg}{Algorytm}{}{}
+	\myalg{\subclu{$D$, $\varepsilon$, $\mu$}}{
+		$ S_1 \gets \emptyset $, 
+		$ C_1 \gets \emptyset $\;
+		\ForEach{$ a \in A_D $}{
+			$ C^{\{a\}} \gets $ \dbscan{D, $\{a\}$, $\varepsilon$, $\mu$}\;
+			\If{$ C^{\{a\}} \neq \emptyset $}{
+				$ S_1 \gets S_1 \cup \{a\}$\;
+				$ C_1 \gets C_1 \cup C^{\{a\}} $\;		
+			}
+		}
+		$ k \gets 1 $\;
+		\While{$ C_k \neq \emptyset$}{
+			$ CandS_{k+1} \gets $ \generateCandidates{$ S_k $}\;
+			\ForEach{$ cand \in CandS_{k+1} $}{
+				$ bestSubspace \gets \min\limits_{s\in S_k \land s\subseteq cand} \sum_{C_i \in C^2}|C_i|$\;
+				$ C^{cand} \gets \emptyset $\;
+				\For{$ cl \in C^{bestSubspace} $}{
+					$ C^{cand} \gets C^{cand}\ \cup $ \dbscan{cl, cand, $\varepsilon$, $\mu$}\;
+					\If{$ C^{cand} \neq \emptyset $}{
+						$ S_{k+1} \gets S_{k+1}\cup cand $\;
+						$ C_{k+1} \gets C_{k+1} \cup C^{cand} $\;
+					}
+				}
+			}
+			$ k \gets k + 1 $
+		}
+	}
+	\setcounter{AlgoLine}{0}
+	\nonl\SetKwProg{myproc}{Procedura}{}{}
+	\myproc{\generateCandidates{$ S_k $}}{
+		$ CandS_{k+1} \gets \set{S |T,U\in S_k \land S = T \cup U \land |S|=k+1} $ \;
+		$ CandS_{k+1} \gets \set{cand \in CandS_{k+1} | \neg \exists_{S \subset cand}\,|S|=k \land S\notin S_k} $ \;
+		\KwRet{$ CandS_{k+1} $}
+	}
+	\setcounter{AlgoLine}{0}
+	\nonl\SetKwProg{myproc}{Procedura}{}{}
+	\myproc{\dbscan{$ D $, $S$, $\varepsilon$, $\mu $}}{
+		\tcc{Zwraca grupy według definicji 8. Można wykorzystać odpowiednio zmodyfikowany \myhyperref{alg:dbscan}{algorytm}. }
+	}
+\end{algorithm}

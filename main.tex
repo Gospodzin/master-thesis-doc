@@ -3,7 +3,7 @@
 	tmargin=2cm, bmargin=2cm, 
 	12pt]{mwrep}
 
-\usepackage{setspace} 
+\usepackage{setspace}
 \onehalfspacing
 
 \makeatletter
@@ -71,7 +71,9 @@
 \newcommand{\myhyperref}[2]{\hyperref[#1]{\mbox{#2 \ref*{#1}}}}
 \newcommand{\varImgWidth}{.6\linewidth}
 \newcommand{\f}{\hspace{-0.1em}f\hspace{-0.1em}}
-\newtheorem{definition}{Definicja}
+
+\newcounter{definitioncounter}
+\newcommand{\definition}[1]{\noindent\stepcounter{definitioncounter}\textbf{Definicja \arabic{definitioncounter}.} \textit{#1}}
 
 \title{PDYM - przygotowanie pracy dyplomowej magisterskiej}
 \author{Marcin Król}
@@ -85,20 +87,18 @@
 	\newcommand{\nonl}{\renewcommand{\nl}{\let\nl\oldnl}}
 	
 	%\maketitle
-  %\tableofcontents
+  \tableofcontents
 
 
-	%\input{assets/intro}
+	\input{assets/intro}
 	
 	\input{assets/clustering-algorithms}
-	%\chapter{Robocze}
-	%\input{assets/odc}
-
-	%\input{assets/ti-vs-p}
-
-	%\input{assets/qscan}
 	
-	%\clearpage
-	%\bibliographystyle{plplain}
-	%\bibliography{assets/bibliography}
+	\input{assets/efficient-methods}
+	
+	\input{assets/summary}
+	
+	\clearpage
+	\bibliographystyle{plplain}
+	\bibliography{assets/bibliography}
 \end{document}

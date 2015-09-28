@@ -1,0 +1,10 @@
+\chapter{Podsumowanie}
+W swojej pracy zaprezentowałem dwa algorytmy grupowania gęstościowego: DBSCAN oraz SUBCLU. Przedstawiłem metodę nierówności trójkąta oraz metodę projekcji, które umożliwiają wydajne wyznaczanie otoczenia punktów. Opisałem też trzy autorskie optymalizacje usprawniające grupowanie algorytmami DBSCAN i SUBCLU. 
+
+Pierwsza z nich, wydajne jednowymiarowe grupowanie, pozwala na ograniczenie czasu grupowania algorytmem SUBCLU poprzez wydajne grupowanie jednowymiarowych podprzestrzeni. Znaczenie tej optymalizacji maleje wraz ze wzrostem wymiarowości zbioru danych, ale zawsze jest mniej lub bardziej korzystna.
+
+Pokazałem jak wybierać wydajny punkt referencyjny, gdy używana jest metody nierówności trójkąta przy grupowaniu dodatnich znormalizowanych wektorów. Spodziewam się przydatności tego rozwiązania głównie przy grupowaniu danych tekstowych.
+
+Zaproponowałem algorytm zrównoleglania obliczeń w algorytmie DBSCAN. Na to rozwiązanie składa się metoda scalania wyników grupowania algorytmem DBSCAN, która może znaleść szersze zastosowanie. Podział obliczeń pozwala na rozproszenie grupowania na wielu maszynach, procesach, ale także, jak się okazało, zwiększa wydajność grupowania nawet jeśli obliczenia są wykonywane sekwencyjnie bez zrównoleglania.
+
+Praktycznym efektem mojej pracy jest program, który umożliwia wykonanie grupowania zaprezentowanymi algorytmami oraz wizualizację i wstępną analizę danych.
