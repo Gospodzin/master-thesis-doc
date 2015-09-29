@@ -1,5 +1,6 @@
 \section{SUBCLU}
-SUBCLU jest algorytmem grupowania gęstościowego bazującym na \linebreak DBSCAN. Pozwala na wykrycie grup znajdujących się we wszystkich podprzestrzeniach grupowanego zbioru danych, gdzie podprzestrzeń jest rozumiana jako podzbiór atrybutów grupowanych obiektów. Grupowanie w podprzestrzeniach jest szczególnie przydatne, gdy mamy do czynienia z \linebreak wysoko-wymiarowymi danymi. Wysoko-wymiarowe dane są z reguły rzadko rozmieszczone w przestrzeni, a niektóre atrybuty mogą zaszumiać grupy istniejące w podprzestrzeniach, dlatego grupowanie wysoko-wymiarowych danych może nie dawać sensownych wyników.
+
+SUBCLU \cite{subclu} jest algorytmem grupowania gęstościowego bazującym na \linebreak DBSCAN. Pozwala na wykrycie grup znajdujących się we wszystkich podprzestrzeniach grupowanego zbioru danych, gdzie podprzestrzeń jest rozumiana jako podzbiór współrzędnych grupowanych punktów. Grupowanie\linebreak \mbox{w podprzestrzeniach} jest szczególnie przydatne, gdy mamy do czynienia\linebreak \mbox{z wysoko-wymiarowymi} danymi. Wysoko-wymiarowe dane są z reguły rzadko rozmieszczone w przestrzeni, a niektóre atrybuty mogą zaszumiać grupy istniejące w podprzestrzeniach, dlatego grupowanie algorytmem DBSCAN wysoko-wymiarowych danych może nie dawać sensownych wyników.
 
 \subsection{Definicje}
 Definicje zawarte w podrozdziale o DBSCAN zostają zapożyczone z modyfikacją umożliwiającą operacje na podprzestrzeni $ S $. Projekcja punktu $ p $ na podprzestrzeń $ S $ będzie oznaczana $\pi_S(p) $. 

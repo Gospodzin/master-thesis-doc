@@ -1,5 +1,5 @@
 \section{DBSCAN}
-DBSCAN jest popularnym algorytmem grupowania gęstościowego. Najważniejsze jego zalety wymienione w \cite{dbscan} to tworzenie grup o dowolnym kształcie oraz możliwość doboru parametrów przy niewielkiej wiedzy o zbiorze danych. Grupy tworzone są na podstawie lokalnej gęstości punktu rozumianej jako liczba punktów w otoczeniu punktu, dzięki czemu tworzone są grupy o intuicyjnych kształtach. Ważną cechą DBSCAN jest też pojęcie punktów szumu, czyli takich, które nie pasują do żadnej grupy. Punkty szumu mogą być cenne, na przykład przy wykrywaniu anomalii.
+DBSCAN \cite{dbscan} jest popularnym algorytmem grupowania gęstościowego. Najważniejsze jego zalety wymienione przez autorów to tworzenie grup o dowolnym kształcie oraz możliwość doboru parametrów przy niewielkiej wiedzy o zbiorze danych. Grupy tworzone są na podstawie lokalnej gęstości punktu rozumianej jako liczba punktów w $ \varepsilon $-otoczeniu punktu, dzięki czemu tworzone są grupy o intuicyjnych kształtach. Ważną cechą DBSCAN jest też pojęcie punktów szumu, czyli takich, które nie pasują do żadnej grupy. Punkty szumu mogą być cenne, na przykład przy wykrywaniu anomalii.
 
 \subsection{Definicje}
 
@@ -18,7 +18,7 @@ Punkt $ p $, który posiada w swoim $ \varepsilon $-otoczeniu $ N_{D,\varepsilon
 \input{assets/figures/core-edge-point}
 
 \definition{bezpośrednia gęstościowa osiągalność (ang. direct density reachability)}\newline
-Dalej, na potrzebę definicji grupy wprowadza się pojęcie bezpośredniej gęstościowej osiągalności. Jest to niesymetryczna relacja, która zachodzi jeśli punkt $ p $ znajduje się w $ \varepsilon $-otoczeniu punktu rdzeniowego $ q $. Punkt $ p $ jest bezpośrednio gęstościowo osiągalny z punktu $ q $, jeśli punkt $ q $ jest punktem rdzeniowym i $ p $ znajduje się w $ \varepsilon $-otoczeniu punktu $ q $ ($ dirreach_{D,\varepsilon,\mu}(p, q) $).
+Na potrzebę definicji grupy wprowadza się pojęcie bezpośredniej gęstościowej osiągalności. Jest to niesymetryczna relacja, która zachodzi jeśli punkt $ p $ znajduje się w $ \varepsilon $-otoczeniu punktu rdzeniowego $ q $. Punkt $ p $ jest bezpośrednio gęstościowo osiągalny z punktu $ q $, jeśli punkt $ q $ jest punktem rdzeniowym i $ p $ znajduje się w $ \varepsilon $-otoczeniu punktu $ q $ ($ dirreach_{D,\varepsilon,\mu}(p, q) $).
 \begin{equation} \label{direct-reachability}
 	dirreach_{D,\varepsilon,\mu}(p, q) \iff p \in N_{D,\varepsilon}(q) \land core_{D,\varepsilon,\mu}(q)
 \end{equation}
@@ -34,33 +34,26 @@ Punkt $ p $, który jest bezpośrednio gęstościowo osiągalny z innego \mbox{p
 \end{equation}
 
 \definition{gęstościowa osiągalność (ang. density reachability)}\newline
-Jeśli w ciągu punktów $ p_1,\dots,p_n $ każdy punkt tego ciągu poza ostatnim jest bezpośrednio gęstościowo osiągalny z punktu następnego, to punkty $ p_1 $ i $ p_n $ są gęstościowo osiągalne.
+Jeśli w ciągu punktów $ p_1,\dots,p_n $ każdy punkt tego ciągu poza ostatnim jest bezpośrednio gęstościowo osiągalny z punktu następnego, to punkt $ p_1 $ jest gęstościowo osiągalny z $ p_n $.
 \begin{equation}
 	reach_{D,\varepsilon,\mu}(p_1, p_n)	\iff 	\exists_{p_1,\dots,p_n}\,\forall_{i\in\set{1,\dots,n-1}}\,dirreach_{D,\varepsilon,\mu}(p_i, p_{i+1})
-\end{equation}
-Jeśli punkt $ p $ jest bezpośrednio gęstościowo osiągalny z $ q $, to jest też gęstościowo osiągalny z $ q $ ($ reach_{D,\varepsilon,\mu}(p, r) $). 
-\begin{equation}
-	dirreach_{D,\varepsilon,\mu}(p, q) \implies reach_{D,\varepsilon,\mu}(p, q)
-\end{equation}
-Gęstościowa osiągalność jest relacją przechodnią, to znaczy, że jeśli $ p $ jest gęstościowo osiągalne z $ q $  i $ q $ gęstościowo osiągalne z $ r $, to $ p $ jest też gęstościowo osiągalne z $ r $.
-\begin{equation}
-	reach_{D,\varepsilon,\mu}(p, q) \land reach_{D,\varepsilon,\mu}(q, r) \implies reach_{D,\varepsilon,\mu}(p, r)
 \end{equation}
 Podobnie, jak relacja bezpośredniej gęstościowej osiągalności, gęstościowa osiągalność nie jest relacją symetryczną.
 \begin{equation}
 	\exists_D\;\neg\forall_{p,q\in D}\;reach_{D,\varepsilon,\mu}(p, q) \implies reach_{D,\varepsilon,\mu}(q, p)
 \end{equation}
 
-\definition{gęstościowa łączność (ang. density connectivity)}\newline
+\input{assets/figures/density-reachability}
+
+\newpage\definition{gęstościowa łączność (ang. density connectivity)}\newline
 Dwa punkty $ p $ i $ q $ są \textit{gęstościowo łączne}, jeśli istnieje taki punkt $ r $, że obydwa punkty $ p $ i $ q $ są gęstościowo osiągalne z $ r $.
 \begin{equation}
 	connect_{D,\varepsilon,\mu}(p, q) \iff \exists_{r\in D}\,reach_{D,\varepsilon,\mu}(p, r) \land reach_{D,\varepsilon,\mu}(q, r)
 \end{equation}
 
 \definition{grupa (ang. cluster)}\newline
-Grupowaniem zbioru $ D $ jest zbiór grup $C = \set{C_i | i \in \mathcal{N}} $ przy czym $ |C| \ge 0$.
 Jeśli istnieje taki punkt $ q $, że $ p $ i $ q $ są gęstościowo łączne, to wtedy i tylko wtedy $ p $ należy do grupy $ C_i $. Jeśli $ p $ należy do grupy $ C_i $ i jest gęstościowo łączne z punktem $ r $ to wtedy i tylko wtedy punkty $ p $ i $ r $ należą do tej samej grupy $ C_i $.
-\begin{equation}
+\begin{equation}\label{eq:cluster-def}
 \left\{
 \begin{array}{l}
 \exists_q\,connect_{D,\varepsilon,\mu}(p,q) \iff p\in C_i \\
@@ -69,8 +62,6 @@ p \in C_i \land connect_{D,\varepsilon,\mu}(p,r) \iff p,r\in C_i
 \right.
 \end{equation}
 
-\input{assets/figures/density-reachability}
-
 \definition{szum (ang. noise)}\newline
 Punkt $ p $, który nie należy do żadnej z grup $ C_i $, nazywa się szumem\linebreak ($ noise_{D,\varepsilon,\mu}(p) $). Taki punkt $ p $ nie jest gęstościowo łączny z żadnym innym punktem $ q $.
 \begin{equation}
@@ -78,9 +69,9 @@ Punkt $ p $, który nie należy do żadnej z grup $ C_i $, nazywa się szumem\li
 \end{equation}
 	
 \subsection{Algorytm}
-Na podstawie przedstawionej wcześniej definicji grupy autorzy DBSCAN zaproponowali algorytm grupowania. Wersję tego algorytmu z drobną poprawką prezentuje \myhyperref{alg:dbscan}{algorytm}. Dla zachowania konsekwencji z linią 11 procedury $ expandcluster $ w linii 3 został dodany warunek $ cid(w) = unde\f{}ined $. W ten sposób zachowana jest poprawność wyniku, a $ \varepsilon $-otoczenie jest wyznaczane dla każdego punktu tylko raz, w odróżnieniu od oryginalnej propozycji, gdzie $ \varepsilon $-otoczenie może być wyznaczone więcej niż jeden raz dla tego samego punktu. Dalej nazwa DBSCAN będzie używana w odniesieniu do \myhyperref{alg:dbscan}{algorytmu}.
+Na podstawie przedstawionej wcześniej definicji grupy autorzy DBSCAN zaproponowali algorytm grupowania. Wersję tego algorytmu z drobną poprawką prezentuje \myhyperref{alg:dbscan}{Aslgorytm}. Dla zachowania konsekwencji z linią 11 procedury $ expandcluster $ w linii 3 został dodany warunek $ cid(w) = unde\f{}ined $. W ten sposób zachowana jest poprawność wyniku, a $ \varepsilon $-otoczenie jest wyznaczane dla każdego punktu tylko raz, w odróżnieniu od oryginalnej propozycji, gdzie $ \varepsilon $-otoczenie może być wyznaczone więcej niż jeden raz dla tego samego punktu. Dalej nazwa DBSCAN będzie używana w odniesieniu do \myhyperref{alg:dbscan}{algorytmu}.
 
-Okazuje się, że zgodnie z definicją grupy (\myhyperref{eq:cluster-def}{wyrażenie}) punkt $ p $ zbioru danych $ D $ może należeć do więcej niż jednej grupy. Taka sytuacja może mieć miejsce, gdy punkt $ p $ jest gęstościowo połączony z punktami $ q $ i $ r $, ale punkty $ q $ i $ r $ nie są ze sobą gęstościowo połączone.
+Okazuje się, że zgodnie z definicją grupy (\myhyperref{eq:cluster-def}{wyrażenie}) punkt $ p $ zbioru danych $ D $ może należeć do więcej niż jednej grupy. Taka sytuacja może mieć miejsce, gdy punkt $ p $ jest gęstościowo łączny z punktami $ q $ i $ r $, ale punkty $ q $ i $ r $ nie są ze sobą gęstościowo łączne.
 \begin{equation}
   \left. \begin{array}{r}
 		connected_{D,\varepsilon,\mu}(p, q) \\
@@ -92,15 +83,15 @@ Okazuje się, że zgodnie z definicją grupy (\myhyperref{eq:cluster-def}{wyraż
 \end{equation}
 Stąd wynika, że punkt $ p $ musi być punktem brzegowym, ponieważ gdyby był punktem rdzeniowym, to $ q $ i $ r $ byłyby gęstościowo połączone za pośrednictwem $ p $.
 
-Algorytm DBSCAN przypisuje każdy punkt ze zbioru danych do odpowiedniej grupy lub szumu poprzez nadanie punktom właściwych etykiet. Każdemu punktowi jest przypisywana tylko jedna etykieta, więc punkt może należeć do co najwyżej jednej grupy, stąd tworzone grupy nie są ściśle zgodne z definicją grupy (\myhyperref{eq:cluster-def}{wyrażenie}). Punkty brzegowe, które zgodnie z definicją grupy powinny należeć do więcej niż jednej grupy, są przez algorytm DBSCAN przypisywane tylko do jednej z tych grup. Co więcej, to, do której z grup zostanie przypisany punkt brzegowy, zależy od kolejności przetwarzania punktów zbioru danych.
+Algorytm DBSCAN przypisuje każdy punkt ze zbioru danych do odpowiedniej grupy lub szumu poprzez nadanie punktom właściwych etykiet. Każdemu punktowi jest przypisywana tylko jedna etykieta, więc punkt może należeć do co najwyżej jednej grupy, stąd tworzone grupy nie są ściśle zgodne z definicją grupy (\myhyperref{eq:cluster-def}{wyrażenie}). Punkty brzegowe, które zgodnie z definicją grupy powinny należeć do więcej niż jednej grupy, są przez algorytm DBSCAN przypisywane tylko do jednej z tych grup. Co więcej, to, do której \mbox{z grup} zostanie przypisany punkt brzegowy, zależy od kolejności przetwarzania punktów zbioru danych.
 
-Warto zwrócić uwagę, że $ \varepsilon $-otoczenie może być wyznaczane za pomocą dowolnej miary odległości lub podobieństwa\footnote{w przypadku miary podobieństwa należy w \myhyperref{eps-neighbourhood}{wyrażeniu} zanegować wartość miary lub odwrócić znak nierówności}. Najczęściej stosowane miary to odległość euklidesowa, Manhattan oraz podobieństwo kosinusowe.
+Warto zwrócić uwagę, że $ \varepsilon $-otoczenie może być wyznaczane za pomocą dowolnej miary odległości lub podobieństwa\footnote{w przypadku miary podobieństwa należy w \myhyperref{eq:eps-neighbourhood}{wyrażeniu} zanegować wartość miary lub odwrócić znak nierówności}. Najczęściej stosowane miary to odległość euklidesowa, Manhattan oraz podobieństwo kosinusowe.
 
 \input{assets/algorithms/dbscan}
 
 \subsection{Wydajność}
 Najbardziej czasochłonną operacją algorytmu DBSCAN jest wyznaczanie $ \varepsilon $-otoczenia punktu. Dla każdego punktu $ \varepsilon $-otoczenie wyznaczane jest co najwyżej raz\footnote{$ \varepsilon $-otoczenie punktu $ p $ jest wyznaczane tylko, jeśli etykieta punktu $ p $ jest nieokreślona, a  po wyznaczeniu $ \varepsilon $-otoczenia zawsze do $ p $ jest przypisywana etykieta}, dlatego jeśli za operację podstawową przyjmiemy wyznaczanie $ \varepsilon $-otoczenia, to w takim sensie złożoność algorytmu będzie liniowa.
 
-Decydująca dla wydajnego działania DBSCAN jest optymalna implementacja wyznaczania $ \varepsilon $-otoczenia. Otoczenie można wyznaczać naiwnie, sprawdzając dla każdego punktu w zbiorze danych, czy znajduje się w $ \varepsilon $-otoczeniu punktu, dla którego jest poszukiwane $ \varepsilon $-otoczenie. Wyznaczanie $ \varepsilon $-otoczenia w ten sposób cechuje jednak liniowa złożoność względem liczby punktów w zbiorze danych, co przekłada się na złożoność kwadratową algorytmu DBSCAN. Istnieją metody pozwalające na wydajniejsze znajdowanie $ \varepsilon $-otoczenia i zostaną omówione w kolejnych rozdziałach.
+Decydująca dla wydajnego działania DBSCAN jest optymalna implementacja wyznaczania $ \varepsilon $-otoczenia. Naiwnym sposobem otrzymania $ \varepsilon $-otoczenia jest sprawdzenie dla każdego punktu w zbiorze danych, czy znajduje się \mbox{w $ \varepsilon $-otoczeniu} punktu, dla którego jest poszukiwane $ \varepsilon $-otoczenie. Wyznaczanie $ \varepsilon $-otoczenia w ten sposób cechuje jednak liniowa złożoność względem liczby punktów w zbiorze danych, co przekłada się na złożoność kwadratową algorytmu DBSCAN. Istnieją metody pozwalające na wydajniejsze znajdowanie $ \varepsilon $-otoczenia i zostaną omówione w kolejnym rozdziale.
 
-Obliczanie wartości miary odległości lub podobieństwa jest czasochłonnym elementem wyznaczania otoczenia. Stosowane zazwyczaj miary wymagają liniowej liczby operacji względem wymiarowości zbioru danych. Wprowadza to liniową zależność czasu wyznaczania otoczenia od wymiarowości zbioru danych. Zakładając, że w podstawowym wariancie DBSCAN liczba operacji wyznaczania otoczenia jest kwadratowa względem rozmiaru zbioru danych, to za złożoność obliczeniową grupowania zbioru danych D można przyjąć $ \mathcal{O}(dim(D)|D|^2) $.
+Obliczanie wartości miary odległości lub podobieństwa jest czasochłonnym elementem wyznaczania $ \varepsilon $-otoczenia. Stosowane zazwyczaj miary wymagają liniowej liczby operacji względem wymiarowości zbioru danych. Wprowadza to liniową zależność czasu wyznaczania $ \varepsilon $-otoczenia od wymiarowości zbioru danych. Zakładając, że w podstawowym wariancie DBSCAN liczba operacji wyznaczania $ \varepsilon $-otoczenia jest kwadratowa względem rozmiaru zbioru danych, to za złożoność obliczeniową grupowania zbioru danych D można przyjąć $ \mathcal{O}(dim(D)|D|^2) $.
