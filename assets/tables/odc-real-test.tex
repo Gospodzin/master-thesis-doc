@@ -1,6 +1,7 @@
 \begin{table}
 	\centering
-	\begin{tabular}{c | c | c | c | c |}
+	\begin{tabular}{| c | c | c | c | c |}
+		\hline
 		$ n $ & $ |D| $ & $ T_{TI} [s]$ & $ T_{W} [s]$ & $ \frac{T_{W}}{T_{TI}} [\%] $ \\ \hline
 		$ 4 $  & $ 10000 $	& 3,114 	& 1,685    & 54,11 \\ \hline
 		$ 6 $  & $ 10000 $	& 15,085 	& 11,186   & 74,15 \\ \hline
@@ -17,5 +18,5 @@
 
 
 	\end{tabular}
-	\caption{Testy przeprowadzone na próbach z rzeczywistego 56-wymiarowego zbioru danych. Próby $ n $-wymiarowe o liczności $ |D| $ uzyskano, ograniczając wymiarowość za pomocą PCA i losując odpowiednią ilość punktów. SUBCLU zostało wywołane z parametrami $ \varepsilon=10 $, $ \mu=10 $. Do grupowania podprzestrzeni wykorzystano TI-DBSCAN z wyjątkiem 1-wymiarowych podprzestrzeni, gdzie dla $ T_{TI} $ użyto TI-DBSCAN, a dla $ T_{W} $ użyto \myhyperref{odc:odc}{algorytmu}. $ T_{TI},\,T_{W} $ - całkowity czas grupowania algorytmem SUBCLU.}\label{odc:real-test}
+	\caption{Testy przeprowadzone na próbach z rzeczywistego 56-wymiarowego zbioru danych. Próby $ n $-wymiarowe o liczności $ |D| $ uzyskano, ograniczając wymiarowość za pomocą PCA i losując odpowiednią ilość punktów. SUBCLU zostało wywołane z parametrami $ \varepsilon=10 $, $ \mu=10 $. Do grupowania podprzestrzeni wykorzystano DBSCAN z wykorzystaniem metody nierówności trójkąta z wyjątkiem 1-wymiarowych podprzestrzeni, gdzie dla $ T_{TI} $ użyto DBSCAN z wykorzystaniem metody nierówności trójkąta, a dla $ T_{W} $ użyto \myhyperref{odc:odc}{Algorytmu}. $ T_{TI},\,T_{W} $ - całkowity czas grupowania algorytmem SUBCLU.}\label{odc:real-test}
 \end{table} 

@@ -1,47 +1,54 @@
 \section{SUBCLU}
 
-SUBCLU \cite{subclu} jest algorytmem grupowania gęstościowego bazującym na \linebreak DBSCAN. Pozwala na wykrycie grup znajdujących się we wszystkich podprzestrzeniach grupowanego zbioru danych, gdzie podprzestrzeń jest rozumiana jako podzbiór współrzędnych grupowanych punktów. Grupowanie\linebreak \mbox{w podprzestrzeniach} jest szczególnie przydatne, gdy mamy do czynienia\linebreak \mbox{z wysoko-wymiarowymi} danymi. Wysoko-wymiarowe dane są z reguły rzadko rozmieszczone w przestrzeni, a niektóre atrybuty mogą zaszumiać grupy istniejące w podprzestrzeniach, dlatego grupowanie algorytmem DBSCAN wysoko-wymiarowych danych może nie dawać sensownych wyników.
+SUBCLU \cite{subclu} jest algorytmem grupowania gęstościowego bazującym na \linebreak DBSCAN. Pozwala na wykrycie grup znajdujących się we wszystkich podprzestrzeniach grupowanego zbioru danych, gdzie podprzestrzeń jest rozumiana jako podzbiór współrzędnych grupowanych punktów. Grupowanie\linebreak \mbox{w podprzestrzeniach} jest szczególnie przydatne, gdy mamy do czynienia\linebreak \mbox{z wysokowymiarowymi} danymi. Wysokowymiarowe dane są z reguły rzadko rozmieszczone w przestrzeni, a niektóre atrybuty mogą zaszumiać grupy istniejące w podprzestrzeniach, dlatego grupowanie algorytmem DBSCAN wysokowymiarowych danych może nie dawać sensownych wyników.
 
 \subsection{Definicje}
-Definicje zawarte w podrozdziale o DBSCAN zostają zapożyczone z modyfikacją umożliwiającą operacje na podprzestrzeni $ S $. Projekcja punktu $ p $ na podprzestrzeń $ S $ będzie oznaczana $\pi_S(p) $. 
+Definicje zawarte w podrozdziale o DBSCAN zostają zapożyczone i zmodyfikowane, tak, aby umożliwić operacje w podprzestrzeni $ S $. Projekcja punktu $ p $ na podprzestrzeń $ S $ będzie oznaczana $\pi_S(p) $. Zakładamy, że grupowany jest $ d $ wymiarowy zbiór punktów $ D $.
 \smallskip
 
 \setcounter{definitioncounter}{0}
 \definition{podprzestrzeń (ang. subspace)}\newline
-Zakładamy, że grupowany jest $ d $ wymiarowy zbiór punktów $ D $. Przestrzeń atrybutów zbioru $ D $ można oznaczyć $ A=\set{a_1,\dots,a_d} $. Podprzestrzenią będzie nazywany każdy podzbiór przestrzeni atrybutów $ S \subseteq A $.
+ Przestrzeń atrybutów zbioru $ D $ można oznaczyć $ A=\set{a_1,\dots,a_d} $. Podprzestrzenią będzie nazywany każdy podzbiór przestrzeni atrybutów $ S \subseteq A $.
 \smallskip
 
-\definition{$ \varepsilon $-otoczenie (ang. $ \varepsilon $-neighbourhood)}
+\definition{$ \varepsilon $-otoczenie (ang. $ \varepsilon $-neighbourhood)}\newline
+Zbiór punktów $ q\in D $ będący $ \varepsilon $-otoczeniem punktu $ p $ w podprzestrzeni $ S $ oznacza się $ N^S_{D,\varepsilon}(p) $ i definiuje następująco:
 \begin{equation}
 	N^S_{D,\varepsilon}(p) = \set{q \in D | d(\pi_s(p), \pi_s(q)) \le \varepsilon}
 \end{equation}
 
-\definition{punkt rdzeniowy (ang. core point)}
+\definition{punkt rdzeniowy (ang. core point)}\newline
+Jeśli punkt $ p $ jest punktem rdzeniowym w podprzestrzeni $ S $, to prawdziwy jest predykat $ core^S_{D,\varepsilon,\mu}(p) $.
 \begin{equation}
 	core^S_{D,\varepsilon,\mu}(p) \iff |N^S_{D,\varepsilon}(p)| \ge \mu
 \end{equation}
 
-\definition{bezpośrednia gęstościowa osiągalność (ang. direct density reachability)}
+\pagebreak \definition{bezpośrednia gęstościowa osiągalność (ang. direct density reachability)} \newline
+Jeśli punkt $ p $ jest bezpośrednio gęstościowo osiągalny z punktu $ q $ w podprzestrzeni $ S $, to prawdziwy jest predykat $ dirreach^S_{D,\varepsilon,\mu}(p, q) $.
 \begin{equation}
 	dirreach^S_{D,\varepsilon,\mu}(p, q) \iff p \in N^S_{D,\varepsilon}(q) \land core^S_{D,\varepsilon,\mu}(q)
 \end{equation}
 
-\definition{punkt brzegowy (ang. edge point)}
+\definition{punkt brzegowy (ang. edge point)} \newline
+Jeśli punkt $ p $ jest punktem brzegowym w podprzestrzeni $ S $, to prawdziwy jest predykat $ edge^S_{D,\varepsilon,\mu}(p) $.
 \begin{equation}
 	edge^S_{D,\varepsilon,\mu}(p) \iff \neg core^S_{D,\varepsilon,\mu}(p) \land dirreach^S_{D,\varepsilon,\mu}(p,q)
 \end{equation}
 
-\definition{gęstościowa osiągalność (ang. density reachability)}
+\definition{gęstościowa osiągalność (ang. density reachability)} \newline
+Jeśli punkt $ p $ jest gęstościowo osiągalny z punktu $ q $ w podprzestrzeni $ S $, to prawdziwy jest predykat $ reach^S_{D,\varepsilon,\mu}(p_1, p_n) $.
 \begin{equation}
 	reach^S_{D,\varepsilon,\mu}(p_1, p_n)	\iff 	\exists_{p_1,\dots,p_n}\,\forall_{i\in\set{1,\dots,n-1}}\,dirreach^S_{D,\varepsilon,\mu}(p_i, p_{i+1}) 
 \end{equation}
 
-\definition{gęstościowa łączność (ang. density connectivity)}
+\definition{gęstościowa łączność (ang. density connectivity)} \newline
+Jeśli punkty $ p $ i $ q $ są gęstościowo łączne, to prawdziwy jest predykat \linebreak $ connect^S_{D,\varepsilon,\mu}(p, q) $.
 \begin{equation}
 connect^S_{D,\varepsilon,\mu}(p, q) \iff \exists_{r\in D}\,reach^S_{D,\varepsilon,\mu}(p, r) \land reach^S_{D,\varepsilon,\mu}(q, r)
 \end{equation}
 
-\definition{grupa (ang. cluster)}
+\definition{grupa (ang. cluster)} \newline
+Grupę $ C_i $ definiuje się następująco:
 \begin{equation}
 	\left\{
 	\begin{array}{l}
@@ -52,13 +59,14 @@ connect^S_{D,\varepsilon,\mu}(p, q) \iff \exists_{r\in D}\,reach^S_{D,\varepsilo
 \end{equation}
 
 
-\definition{szum (ang. noise)}
+\definition{szum (ang. noise)} \newline
+Jeśli punkt $ p $ jest szumem w podprzestrzeni $ S $, to prawdziwy jest predykat $ noise^S_{D,\varepsilon,\mu}(p) $.
 \begin{equation}
 	noise^S_{D,\varepsilon,\mu}(p) \iff \forall_i \;p\notin C_i \iff \forall_{q \in D} \,\neg connect^S_{D,\varepsilon,\mu}(p,q)
 \end{equation}
 
 \definition{gęstościowo łączny zbiór (ang. density connected set)}\newline
-Jeśli każdy punkt zbioru $ V $ jest gęstościowo łączny w podprzestrzeni $ S $ z każdym punktem należącym do $ V $, to zbiór $ V $ jest gęstościowo łączny w $ S $ ($ conset^S_{D,\varepsilon, \mu}(V) $).
+Jeśli każdy punkt zbioru $ V $ jest gęstościowo łączny w podprzestrzeni $ S $ \pagebreak \linebreak\mbox{z każdym} punktem należącym do $ V $, to zbiór $ V $ jest gęstościowo łączny \mbox{w $ S $} ($ conset^S_{D,\varepsilon, \mu}(V) $).
 \begin{equation}
 	conset^S_{D,\varepsilon, \mu}(V) \iff \forall_{p,q\in V}\,connect^S_{D,\varepsilon, \mu}(p,q)
 \end{equation}
@@ -66,13 +74,13 @@ Każda grupa jest jednocześnie gęstościowo łącznym zbiorem, ale nie każdy 
 \smallskip
 
 \definition{monotoniczność gęstościowej łączności (ang. monotonicity of density connectivity)}\newline
-Monotonicznością gęstościowej łączności nazywa się własność, która mówi, że jeśli w podprzestrzeni $ S $ istnieje gęstościowo łączny zbiór $ V $, to zbiór $ V $ istnieje też w podprzestrzeni $ T \subseteq S $.
+Monotonicznością gęstościowej łączności nazywa się własność, która oznacza, że jeśli w podprzestrzeni $ S $ istnieje gęstościowo łączny zbiór $ V $, to zbiór $ V $ jest też gęstościowo łączny w podprzestrzeni $ T \subseteq S $.
 \begin{equation}
 	conset^S_{D,\varepsilon,\mu}(V) \implies conset^T_{D,\varepsilon,\mu}(V)
 \end{equation}
 
 \subsection{Algorytm}
-Najprostszym rozwiązaniem problemu znalezienia grup we wszystkich podprzestrzeniach zbioru D jest zastosowanie algorytmu DBSCAN do znalezienia grup w każdej z podprzestrzeni oddzielnie. W ten sposób niewątpliwie można znaleźć wszystkie grupy istniejące w podprzestrzeniach zbioru $ D $. Istotnym problemem jest jednak liczba istniejących podprzestrzeni \mbox{zbioru $ D $}. Jeśli przyjmiemy, że zbiór $ D $ jest $ d $ wymiarowy, to zbiór $ D $ posiada $ 2^n $ podprzestrzeni. Grupowanie algorytmem DBSCAN trzeba przeprowadzić w każdej z podprzestrzeni poza $ 0 $-wymiarową podprzestrzenią, więc znalezienie grup we wszystkich podprzestrzeniach wymaga $ 2^n-1 $ grupowań algorytmem DBSCAN. Jest to istotne ograniczenie uniemożliwiające zastosowanie tej metody dla wysoko-wymiarowych danych.
+Najprostszym rozwiązaniem problemu znalezienia grup we wszystkich podprzestrzeniach zbioru D jest zastosowanie algorytmu DBSCAN do znalezienia grup w każdej z podprzestrzeni oddzielnie. W ten sposób można znaleźć wszystkie grupy istniejące w podprzestrzeniach zbioru $ D $. Istotnym problemem jest jednak liczba istniejących podprzestrzeni \mbox{zbioru $ D $}. Jeśli przyjmiemy, że zbiór $ D $ jest $ d $ wymiarowy, to zbiór $ D $ posiada $ 2^n $ podprzestrzeni. Grupowanie algorytmem DBSCAN trzeba przeprowadzić w każdej z podprzestrzeni poza $ 0 $-wymiarową podprzestrzenią, więc znalezienie grup we wszystkich podprzestrzeniach wymaga $ 2^n-1 $ grupowań algorytmem DBSCAN. Jest to istotne ograniczenie uniemożliwiające zastosowanie tej metody dla wysokowymiarowych danych.
 
 Okazuje się, że można istotnie ograniczyć liczbę punktów i podprzestrzeni, w których jest przeprowadzane grupowanie. Autorzy SUBCLU wykorzystali w tym celu własność monotoniczności gęstościowej łączności. Monotoniczność gęstościowej łączności wynika z faktu, że dla pary punktów $ p $ i $ q $ odległość między projekcjami $ \pi_S(p) $ i $ \pi_S(q) $ jest zawsze większa bądź równa od odległości między projekcjami $ \pi_T(p) $ i $ \pi_T(q) $, gdzie $ T \subseteq S $. 
 \begin{equation}\label{eq:d-vs-d-projected}
@@ -92,7 +100,7 @@ Z \myhyperref{eq:d-vs-d-projected}{wyrażenia} wynikają zależności, które uz
 
 Monotoniczność gęstościowej łączności nie jest wykorzystywana bezpośrednio, ale na jej podstawie, odwracając rozumowanie, można dojść do wniosku, że jeśli w podprzestrzeni $ T $ zbiór $ V $ nie jest gęstościowo łączny, to nie jest też gęstościowo łączny w $ S $. Posiłkując się faktem, że grupa jest gęstościowo łącznym zbiorem, dochodzimy do wniosku, że jeśli \mbox{w $ T $} nie istnieje żadna grupa, to żadna grupa nie może też istnieć w $ S $. Tym samym, jeśli w $ T $ nie istnieje żadna grupa, to nie ma sensu wykonywać grupowania w $ S $.
 
-Z \myhyperref{eq:d-vs-d-projected}{wyrażenia} wynika jeszcze jedna ważna własność, którą SUBCLU wykorzystuje do ograniczenia zbioru danych podczas grupowania w podprzestrzeniach. Zbiór $ V $ może być zbiorem gęstościowo łącznym w podprzestrzeni $ S $, tylko jeśli $ V $ jest podzbiorem zbioru gęstościowo łącznego $ W $ w $ T $.
+Z \myhyperref{eq:d-vs-d-projected}{wyrażenia} wynika jeszcze jedna ważna własność, którą SUBCLU wykorzystuje do ograniczenia liczby punktów zbioru danych podczas grupowania w podprzestrzeniach. Zbiór $ V $ może być zbiorem gęstościowo łącznym w podprzestrzeni $ S $, tylko jeśli $ V $ jest podzbiorem zbioru gęstościowo \linebreakłącznego $ W $ w $ T $.
 \begin{equation}
  conset^S_{D,\varepsilon,\mu}(V) \implies \exists_W\,V\subseteq W \land conset^T_{D,\varepsilon,\mu}(W)
 \end{equation}
@@ -103,4 +111,4 @@ Kompletny algorytm grupowania SUBCLU przedstawia \myhyperref{alg:subclu}{algoryt
 \input{assets/algorithms/subclu}
 
 \subsection{Wydajność}
-Wydajność SUBCLU jest ściśle uzależniona od wydajności implementacji algorytmu DBSCAN zastosowanego do grupowania w poszczególnych podprzestrzeniach. Równie ważny jest dobór parametrów $ \varepsilon $ i $ \mu $, który wpływa na liczbę i wielkość grup i stąd na liczbę podprzestrzeni, w których przeprowadzane jest grupowanie. W pesymistycznym przypadku trzeba jednak liczyć się, że grupowanie zostanie przeprowadzone w $ 2^{dim(D)}-1 $ podprzestrzeniach. Jeśli założymy, że złożoność DBSCAN to $\mathcal{O}( dim(D)|D|^2 )$, to pesymistyczna złożoność SUBCLU wyniesie $ \mathcal{O}(2^{dim(D)}dim(D)|D|^2) $.
+Wydajność SUBCLU jest ściśle uzależniona od wydajności implementacji algorytmu DBSCAN zastosowanego do grupowania w poszczególnych podprzestrzeniach. Równie ważny jest dobór parametrów $ \varepsilon $ i $ \mu $, który wpływa na liczbę i wielkość grup i stąd na liczbę podprzestrzeni, w których przeprowadzane jest grupowanie algorytmem DBSCAN. W pesymistycznym przypadku grupowanie algorytmem DBSCAN może zostać przeprowadzone w $ 2^{dim(D)}-1 $ podprzestrzeniach. Jeśli założymy, że złożoność DBSCAN to $\mathcal{O}( dim(D)|D|^2 )$, to pesymistyczna złożoność SUBCLU wyniesie $ \mathcal{O}(2^{dim(D)}dim(D)|D|^2) $.

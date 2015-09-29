@@ -1,11 +1,11 @@
 \section{Metoda projekcji}
 Metoda projekcji jest sposobem indeksowania danych optymalizującym wyznaczanie $ \varepsilon $-otoczenia. Metoda projekcji sposobem działania przypomina metodę nierówności trójkąta.
 \subsection{Algorytm}
-Zakładam, że szukamy $ \varepsilon $-otoczenia punktu $ p $ w zbiorze danych $ D $. Dla każdego punktu $ q \in D $ i wybranej współrzędnej projekcji $ l $ zachodzi zależność, że jeśli różnica wartości współrzędnej projekcji $ l $ punktów $ p $ i $ q $ jest większa niż $ \varepsilon $, to odległość między punktami $ p $ i $ q $ jest również większa od $ \varepsilon $, a stąd punkt $ q $ nie jest elementem $ \varepsilon $-otoczenia punktu $ p $. Projekcja punktu $ q $ na współrzędną \mbox{projekcji $ l $} będzie \mbox{oznaczana $ \pi_l(q) $}.
-\begin{equation}
+Zakładam, że szukamy $ \varepsilon $-otoczenia punktu $ p $ w zbiorze danych $ D $. Dla każdego punktu $ q \in D $ i wybranej współrzędnej projekcji $ l $ zachodzi zależność, że jeśli różnica wartości współrzędnej projekcji $ l $ punktów $ p $ i $ q $ jest większa niż $ \varepsilon $, to odległość między punktami $ p $ i $ q $ jest również większa od $ \varepsilon $, a stąd punkt $ q $ nie jest elementem $ \varepsilon $-otoczenia punktu $ p $. Projekcja punktu $ q $ na współrzędną \mbox{projekcji $ l $} będzie \mbox{oznaczana $ \pi_l(q) $}. Jeśli dla pewnej miary nie zachodzi \myhyperref{eq:projection-raw}{zależność}, to nie można z tą miarą stosować metody projekcji. 
+\begin{equation} \label{eq:projection-raw}
 	\abs{\pi_l(p) - \pi_l(q)} > \varepsilon \implies d(p,q) > \varepsilon	\implies q \notin N_{D,\varepsilon}(p)
 \end{equation}
-Dalej można wywnioskować, że jeśli punkt $ q $ należy do $ \varepsilon $-otoczenia \mbox{punktu $ p $}, to różnica między wartościami współrzędnych punktów $ p $ i $ q $ nie może być większa niż $ \varepsilon $.
+Można wywnioskować, że jeśli punkt $ q $ należy do $ \varepsilon $-otoczenia \mbox{punktu $ p $}, to różnica między wartościami współrzędnych punktów $ p $ i $ q $ nie może być większa niż $ \varepsilon $.
 \begin{equation}\label{eq:projection}
 	q \in N_{D,\varepsilon}(p) \implies d(p,q) \le \varepsilon \implies \abs{\pi_l(p) - \pi_l(q)} \le \varepsilon
 \end{equation}
@@ -66,7 +66,7 @@ Na podstawie $ \myhyperref{eq:projection}{zależności} $ wiemy, że punktów na
 \end{equation}
 Szukamy więc punktów, dla których wartość współrzędnej $ l $ mieści się w przedziale $ \left[\pi_l(p)-\varepsilon,\pi_l(p)+\varepsilon\right] $. Możemy tę wiedzę wykorzystać, aby zapewnić szybki dostęp do zbioru punktów $ q $ spełniających warunek $ \abs{\pi_l(p) - \pi_l(q)} \le \varepsilon $. Należy posortować zbiór danych $ D $ po wartości współrzędnej $ l $. Poszukiwane punkty będą znajdowały się na pozycjach przed oraz po punkcie $ p $. Zaczynając w pozycji punktu $ p $, należy przesuwać się w przód listy i dla każdego kolejnego punktu $ q $ sprawdzać, czy należy do $ \varepsilon $-otoczenia punktu $ p $. Sprawdzanie kończymy, kiedy trafimy na punkt $ q $, dla którego $ \pi_l(q) $ nie mieści się w przedziale $ \left[\pi_l(p)-\varepsilon,\pi_l(p)+\varepsilon\right] $. Analogicznie postępujemy, przesuwając się w tył listy. Wynikiem jest $ \varepsilon $-otoczenie punktu $ p $, zawierające każdy ze sprawdzonych punktów, który spełnia warunek $ d(p,q) \le \varepsilon $ oraz punkt $ p $.
 
-Kompletną metodę projekcji przedstawia \myhyperref{alg:projection}{algorytm}. Wdrożenie metody projekcji do algorytmu DBSCAN ogranicza się do wyboru odpowiedniego $ l $ i wykonaniu następującego przypisania \mbox{$ N_{D,\varepsilon}(p) \gets pjneighbourhood(D, \varepsilon, r, p) $.}
+Kompletną metodę projekcji przedstawia \myhyperref{alg:projection}{Algorytm}. Wdrożenie metody projekcji do algorytmu DBSCAN ogranicza się do wyboru odpowiedniego $ l $ i wykonaniu następującego przypisania \mbox{$ N_{D,\varepsilon}(p) \gets pjneighbourhood(D, \varepsilon, r, p) $.}
 
 \begin{algorithm}[t]
 	\caption{Metoda projekcji}\label{alg:projection}
@@ -112,7 +112,7 @@ Kompletną metodę projekcji przedstawia \myhyperref{alg:projection}{algorytm}. 
 \end{algorithm}
 
 \subsection{Wydajność}
-Szukamy $ \varepsilon $-otoczenia punktu $ p $ w zbiorze danych $ D $. Aby zapewnić efektywne działanie \myhyperref{alg:projection}{algorytmu} warto jest wcześniej wyznaczyć wartości projekcji na współrzędną projekcji $ l $ dla każdego punktu $ q $ w zbiorze danych $ D $ i odpowiednio posortować punkty zbioru danych $ D $ względem wartości projekcji na współrzędną $ l $. W ten sposób możemy zapewnić stałą złożoność operacji $ sortid(p) $, $ at(i) $ dla $ i \in \set{1,\dots,|D|} $. Zakładam, że dostęp do wartości $ \pi_l(q) $ dla dowolnego punktu $ q $ posiada stałą złożoność obliczeniową. Jeśli te warunki zostaną spełnione, to możemy przyjąć, że najbardziej czasochłonną operacją \myhyperref{alg:projection}{algorytmu} jest wyznaczanie odległości między punktem $ p $, a punktami $ q $ należącymi do zbioru \mbox{$ R = \set{q | \pi_l(q) \in \left[\pi_l(p)-\varepsilon,\pi_l(p)+\varepsilon\right]} $}.
+Szukamy $ \varepsilon $-otoczenia punktu $ p $ w zbiorze danych $ D $. Aby zapewnić efektywne działanie \myhyperref{alg:projection}{Algorytmu} warto jest wcześniej wyznaczyć wartości projekcji na współrzędną projekcji $ l $ dla każdego punktu $ q $ w zbiorze danych $ D $ \mbox{i odpowiednio} posortować punkty zbioru danych $ D $ względem wartości projekcji na współrzędną $ l $. W ten sposób możemy zapewnić stałą złożoność operacji $ sortid(p) $, $ at(i) $ dla $ i \in \set{1,\dots,|D|} $. Zakładam, że dostęp do wartości $ \pi_l(q) $ dla dowolnego punktu $ q $ posiada stałą złożoność obliczeniową. Jeśli te warunki zostaną spełnione, to możemy przyjąć, że najbardziej czasochłonną operacją \myhyperref{alg:projection}{Algorytmu} jest wyznaczanie odległości między punktem $ p $, a punktami $ q $ należącymi do zbioru \mbox{$ R = \set{q | \pi_l(q) \in \left[\pi_l(p)-\varepsilon,\pi_l(p)+\varepsilon\right]} $}.
 
 Jeśli za operację podstawową uznamy obliczanie odległości, to złożoność obliczeniowa wyznaczania $ \varepsilon $-otoczenia za pomocą metody projekcji zależy ściśle od liczebności zbioru $ R $. W pesymistycznym przypadku, dla dostatecznie dużej wartości $ \varepsilon $, liczebność $ R $ może równać się liczebności $ D $. Jeśli założyć, że odwzorowanie zbioru $ D $ na zbiór $ T $ wartości projekcji na współrzędną $ l $ posiada rozkład równomierny, to liczebność zbioru $ R $ można przybliżyć jako stosunek $ \frac{2\varepsilon}{\max(T)-\min(T)} $. 
 
@@ -190,7 +190,7 @@ Istnieje wariant metody projekcji, który umożliwia wykorzystanie wielu współ
 \begin{equation}\label{eq:projection-mult}
 	q \in N_{D,\varepsilon}(p) \implies  \forall_{\lambda\in L}\,\pi_\lambda(q) \in \left[\pi_\lambda(p)-\varepsilon,\pi_\lambda(p)+\varepsilon\right] 
 \end{equation}
-Dzięki wprowadzeniu \myhyperref{eq:projection-mult}{waruneku} możemy uniknąć wyznaczania dystansu dla części punktów.
+Dzięki wprowadzeniu \myhyperref{eq:projection-mult}{warunku} możemy uniknąć wyznaczania dystansu dla części punktów.
 
 \begin{algorithm}[t]
 	\caption{Metoda projekcji z wieloma współrzędnymi projekcji}\label{alg:projection-mult}
