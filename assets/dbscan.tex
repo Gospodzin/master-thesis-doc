@@ -69,7 +69,7 @@ Punkt $ p $, który nie należy do żadnej z grup $ C_i $, nazywa się szumem\li
 \end{equation}
 	
 \subsection{Algorytm}
-Na podstawie przedstawionej wcześniej definicji grupy autorzy DBSCAN zaproponowali algorytm grupowania. Wersję tego algorytmu z drobną poprawką prezentuje \myhyperref{alg:dbscan}{Aslgorytm}. Dla zachowania konsekwencji z linią 11 procedury $ expandcluster $ w linii 3 został dodany warunek $ cid(w) = unde\f{}ined $. W ten sposób zachowana jest poprawność wyniku, a $ \varepsilon $-otoczenie jest wyznaczane dla każdego punktu tylko raz, w odróżnieniu od oryginalnej propozycji, gdzie $ \varepsilon $-otoczenie może być wyznaczone więcej niż jeden raz dla tego samego punktu. Dalej nazwa DBSCAN będzie używana w odniesieniu do \myhyperref{alg:dbscan}{algorytmu}.
+Na podstawie przedstawionej wcześniej definicji grupy autorzy DBSCAN zaproponowali algorytm grupowania. Wersję tego algorytmu z drobną poprawką prezentuje \myhyperref{alg:dbscan}{algorytm}. Dla zachowania konsekwencji z linią 11 procedury $ expandcluster $ w linii 3 został dodany warunek $ cid(w) = unde\f{}ined $. W ten sposób zachowana jest poprawność wyniku, a $ \varepsilon $-otoczenie jest wyznaczane dla każdego punktu tylko raz, w odróżnieniu od oryginalnej propozycji, gdzie $ \varepsilon $-otoczenie może być wyznaczone więcej niż jeden raz dla tego samego punktu. Dalej nazwa DBSCAN będzie używana w odniesieniu do \myhyperref{alg:dbscan}{algorytmu}.
 
 Okazuje się, że zgodnie z definicją grupy (\myhyperref{eq:cluster-def}{wyrażenie}) punkt $ p $ zbioru danych $ D $ może należeć do więcej niż jednej grupy. Taka sytuacja może mieć miejsce, gdy punkt $ p $ jest gęstościowo łączny z punktami $ q $ i $ r $, ale punkty $ q $ i $ r $ nie są ze sobą gęstościowo łączne.
 \begin{equation}

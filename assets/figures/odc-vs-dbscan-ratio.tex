@@ -9,5 +9,5 @@
       \addplot table {assets/data/odc-vs-dbscan-ratio.dat};
     \end{axis}
   \end{tikzpicture}
-  \caption{Stosunek czasu wykonania TIDBSCAN do wydajnego jedno-wymiarowego grupowania w zależności od wielkości zbioru danych. W obu przypadkach uwzględniony jest czas sortowania. Algorytmy wykonane z parametrami $ \varepsilon=200 $, $ \mu=5 $ na losowo wygenerowanych danych z rozkładu równomiernego na zbiorze \mbox{$ D \subseteq \set{ 0...9999 } $}. Wykorzystano TI-DBSCAN z jednym punktem referencyjnym \mbox{$ max(D) = r \in \set{ 0...9999 } \,|\, \forall v \in D$, $\exists w \in D : r \ge v \land r = w$.}}\label{odc:odc-vs-dbscan-ratio}
+  \caption{Stosunek czasu wykonania DBSCAN z wykorzystaniem metody nierówności trójkąta do wydajnego jednowymiarowego grupowania \mbox{w zależności} od wielkości zbioru danych. W obu przypadkach uwzględniony jest czas sortowania. Algorytmy wykonane z parametrami $ \varepsilon=200 $, $ \mu=5 $ na losowo wygenerowanych danych z rozkładu równomiernego na zbiorze \mbox{$ D \subseteq \set{ 0...9999 } $}. Wykorzystano DBSCAN z metodą nierówności trójkąta z jednym punktem referencyjnym \mbox{$ max(D) = r \in \set{ 0...9999 } \,|\, \forall v \in D$, $\exists w \in D : r \ge v \land r = w$.}}\label{odc:odc-vs-dbscan-ratio}
 \end{figure}
