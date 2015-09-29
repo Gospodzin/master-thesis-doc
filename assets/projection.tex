@@ -185,12 +185,47 @@ Wybór współrzędnej projekcji $ l $ jest decydujący dla wydajności metody p
 
 Jednym ze sposobów na wybranie efektywnej współrzędnej projekcji $ l $ jest wybranie takiego $ l $, dla którego wartość $ m $ jest największa. Wyznaczenie wartości $ m $ dla danego $ l $ jest realizowalne w czasie liniowym, ale możliwych do wyboru współrzędnych jest $ dim(D) $. Wyznaczenie wartości $ m $ dla wszystkich współrzędnych nie powinno stwarzać problemów wydajnościowych nawet dla wysokowymiarowych danych.
 
+\begin{table}[H] 
+	\footnotesize
+	\tabcolsep=0.11cm
+	\centering
+	\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+		\hline 
+	$D$			&$ \varepsilon $ & $ \mu $ & $|D|$&$dim(D)$&$l$&$m$&$mad$&$sd$&$T_s [s]$&$T[s]$\\\hline
+	seqoia	&4000	&4&62556	&2	&1	&1.04e+06&1.19e+05	&1.44e+05&0.09&0.65		\\\hline
+	seqoia	&4000	&4&62556	&2	&0	&1.32e+06&2.74e+05	&3.21e+05&0.09&1.30		\\\hline
+	birch		&4000	&4&100000	&2	&1	&1.00e+06&2.31e+05	&2.66e+05&0.13&1.95		\\\hline
+	birch		&4000	&4&100000	&2	&0	&9.95e+05&2.31e+05	&2.66e+05&0.09&1.94		\\\hline
+	cup98		&40		&4&96367	&56	&37	&6.00e+03&6.59e+03	&9.40e+03&0.12&45.07	\\\hline
+	cup98		&40		&4&96367	&56	&25	&6.50e+02&3.61e+01	&5.00e+01&0.10&494.01	\\\hline
+	covtype	&120	&4&50000	&55	&5	&7.12e+03&1.29e+03	&1.56e+03&0.07&10.36	\\\hline
+	covtype	&120	&4&50000	&55	&0	&1.97e+03&2.18e+02	&2.81e+02&0.09&68.75	\\\hline
+	\end{tabular}
+	\caption{Grupowania zbioru danych $ D $ algorytmem DBSCAN z metodą projekcji. $ mad $ - średnie bezwględne odchylenie współrzędnej $ l $, $ sd $ - odchylenie standardowe współrzędnej $ l $, $ T_s $ - czas sortowania, $ T $ - całkowity czas grupowania}\label{tbl:projection-time-by-dim}
+\end{table}
+Doświadczenia pokazują, że dobrymi wskaźnikami efektywności wybranej współrzędnej projekcji mogą też być wartości odchylenia standardowego lub bezwzględnego średniego odchylenia, przy czym należy te wartości maksymalizować. \myhyperref{tbl:projection-time-by-dim}{Tabela} przedstawia przykłady czasu grupowania rzeczywistych zbiorów danych w zależności od wartości wskaźników dla wybranej współrzędnej projekcji $ l $.
+
 \subsubsection{Wiele wymiarów projekcji}
 Istnieje wariant metody projekcji, który umożliwia wykorzystanie wielu współrzędnych projekcji. Zakładam, że wyznaczane jest $ \varepsilon $-otoczenie punktu $ p $ w zbiorze danych $ D $. Metoda projekcji z wieloma wymiarami projekcji działa podobnie jak zwykła metoda projekcji. Nadal wymagane jest wybranie współrzędnej projekcji $ l $, po którym sortowane są dane. Dodatkowo wybierany jest jeszcze zbiór innych współrzędnych $ L $. Różnica w działaniu algorytmu polega na tym, że dodatkowo wprowadza się \myhyperref{eq:projection-mult}{warunek} na przynależność punktu $ q $ do $ \varepsilon $-otoczenia $ p $.
 \begin{equation}\label{eq:projection-mult}
 	q \in N_{D,\varepsilon}(p) \implies  \forall_{\lambda\in L}\,\pi_\lambda(q) \in \left[\pi_\lambda(p)-\varepsilon,\pi_\lambda(p)+\varepsilon\right] 
 \end{equation}
-Dzięki wprowadzeniu \myhyperref{eq:projection-mult}{warunku} możemy uniknąć wyznaczania dystansu dla części punktów.
+Dzięki wprowadzeniu \myhyperref{eq:projection-mult}{warunku} możemy uniknąć wyznaczania dystansu dla części punktów. \myhyperref{tbl:projection-time-by-nu}{Tabela} pokazuje, że zastosowanie wielu wymiarów projekcji może dać wymierny zysk.
+
+\begin{table}[H] 
+	\footnotesize
+	\tabcolsep=0.11cm
+	\centering
+	\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|}
+		\hline 
+		$D$			&$ \varepsilon $ & $ \mu $ & $|D|$&$dim(D)$& $ mad_1 $&$ mad_2 $&$ mad_3 $&$ T_s[s]$&$ T_1[s] $&$ T_2[s] $&$ T_3[s] $\\\hline
+		seqoia	&4000	&4&62556	&2 &273802&119222&-& 0.09 & 0.75  & 0.44 		& -		\\\hline
+		birch		&4000	&4&100000	&2 &230514&230517&-& 0.14 & 2.07  & 1.03		& -		\\\hline
+		cup98		&40		&4&96367	&56&659&635&36& 0.13 & 44.53 & 32.93		& 27.00		\\\hline
+		covtype	&120	&4&100000	&55&1292&998&216& 0.15 & 44.29 & 11.494	& 9.021	\\\hline
+	\end{tabular}
+	\caption{Grupowania zbioru danych $ D $ algorytmem DBSCAN z metodą projekcji z $ \nu $ współrzędnymi projekcji, $ \nu \in \set{1,2,3} $. Wybrano $ \nu $ współrzędnych projekcji o najwyższej wartości średniego bezwzględnego odchylenia. Dane zostały posortowane po współrzędnej projekcji o maksymalnej wartości średniego bezwzględnego odchylenia. $ mad_i $ - średnie bezwględne odchylenie $ i $-tej współrzędnej projekcji, $ T_s $ - czas sortowania, $ T_\nu $ - całkowity czas grupowania z $ \nu $ współrzędnymi projekcji}\label{tbl:projection-time-by-nu}
+\end{table}
 
 \begin{algorithm}[t]
 	\caption{Metoda projekcji z wieloma współrzędnymi projekcji}\label{alg:projection-mult}
