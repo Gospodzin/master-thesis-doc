@@ -75,7 +75,6 @@
 \newcounter{definitioncounter}
 \newcommand{\definition}[1]{\noindent\stepcounter{definitioncounter}\textbf{Definicja \arabic{definitioncounter}.} \textit{#1}}
 
-\title{PDYM - przygotowanie pracy dyplomowej magisterskiej}
 \author{Marcin Król}
 \date{\today}
 
@@ -86,19 +85,23 @@
 	\let\oldnl\nl
 	\newcommand{\nonl}{\renewcommand{\nl}{\let\nl\oldnl}}
 	
-	%\maketitle
+	\pagenumbering{gobble}
+%	\setcounter{page}{4}
   \tableofcontents
 
-
+	\pagenumbering{arabic}
+	\setcounter{page}{5}
 	\input{assets/intro}
 	
-	\input{assets/clustering-algorithms}
+%	\input{assets/clustering-algorithms}
 	
-	\input{assets/efficient-methods}
+%	\input{assets/efficient-methods}
 	
-	\input{assets/summary}
+%	\input{assets/summary}
 	
 	\clearpage
 	\bibliographystyle{plplain}
 	\bibliography{assets/bibliography}
+
+	\input{assets/attachments}
 \end{document}
