@@ -1,85 +1,72 @@
 \section{DBSCAN}
-DBSCAN \cite{dbscan} jest popularnym algorytmem grupowania gęstościowego. Najważniejsze jego zalety wymienione przez autorów to tworzenie grup o dowolnym kształcie oraz możliwość doboru parametrów przy niewielkiej wiedzy o zbiorze danych. Grupy tworzone są na podstawie lokalnej gęstości punktu rozumianej jako liczba punktów w $ \varepsilon $-otoczeniu punktu, dzięki czemu tworzone są grupy o intuicyjnych kształtach. Ważną cechą DBSCAN jest też pojęcie punktów szumu, czyli takich, które nie pasują do żadnej grupy. Punkty szumu mogą być cenne, na przykład przy wykrywaniu anomalii.
+DBSCAN \cite{dbscan} jest popularnym algorytmem grupowania gęstościowego. Najważniejsze jego zalety wymienione przez autorów to tworzenie grup o dowolnym kształcie oraz możliwość doboru parametrów przy niewielkiej wiedzy o zbiorze danych. Grupy tworzone są na podstawie lokalnej gęstości punktu rozumianej jako liczba punktów w tzw. $ \varepsilon $-otoczeniu punktu i mają intuicyjne kształty. Ważną cechą DBSCAN jest też pojęcie punktów szumu, czyli takich, które nie pasują do żadnej grupy. Punkty szumu mogą być cenne, na przykład przy wykrywaniu anomalii.
 
 \subsection{Definicje}
 
 \definition{$ \varepsilon $-otoczenie (ang. $ \varepsilon $-neighbourhood)}\newline
-Zakładamy, że grupowany jest zbiór punktów $ D $. Na potrzebę algorytmu definiuje się pojęcie $ \varepsilon $-otoczenia punktu $ p \in D $. Jest to zbiór punktów $ q \in D $ znajdujących się w odległości nie większej niż $ \varepsilon $ od punktu $ p $, dla którego jest wyznaczane $\varepsilon$-otoczenie. Dalej $\varepsilon$-otoczenie punktu $ p $ w zbiorze $ D $ będzie oznaczane $ N_{D,\varepsilon}(p) $.
+Zakładamy, że grupowany jest zbiór punktów $ D $. Zbiór punktów $ q \in D $, znajdujących się w odległości nie większej niż $ \varepsilon $ od punktu $ p $, nazywa się $ \varepsilon $-otoczeniem punktu $ p $. Dalej $\varepsilon$-otoczenie punktu $ p $ w zbiorze $ D $ będzie oznaczane $ N_{D,\varepsilon}(p) $.
 \begin{equation}\label{eq:eps-neighbourhood}
 	N_{D,\varepsilon}(p) = \set{q \in D | d(p, q) \le \varepsilon}
 \end{equation}
 
-\definition{punkt rdzeniowy (ang. core point)}\newline
-Punkt $ p $, który posiada w swoim $ \varepsilon $-otoczeniu $ N_{D,\varepsilon}(p) $ co najmniej $ \mu $ punktów jest nazywany punktem rdzeniowym ($ core_{D,\varepsilon,\mu}(p) $).
+\definition{punkt rdzeniowy (ang. core point) (\myhyperref{fig:core-edge-point}{rysunek})}\newline
+Punkt $ p $, który posiada w swoim $ \varepsilon $-otoczeniu $ N_{D,\varepsilon}(p) $ co najmniej \mbox{$ \mu $ punktów} jest nazywany punktem rdzeniowym ($ core_{D,\varepsilon,\mu}(p) $).
 \begin{equation}\label{core-point}
 	core_{D,\varepsilon,\mu}(p) \iff |N_{D,\varepsilon}(p)| \ge \mu
 \end{equation}
 
 \input{assets/figures/core-edge-point}
 
-\definition{bezpośrednia gęstościowa osiągalność (ang. direct density reachability)}\newline
-Na potrzebę definicji grupy wprowadza się pojęcie bezpośredniej gęstościowej osiągalności. Jest to niesymetryczna relacja, która zachodzi jeśli punkt $ p $ znajduje się w $ \varepsilon $-otoczeniu punktu rdzeniowego $ q $. Punkt $ p $ jest bezpośrednio gęstościowo osiągalny z punktu $ q $, jeśli punkt $ q $ jest punktem rdzeniowym i $ p $ znajduje się w $ \varepsilon $-otoczeniu punktu $ q $ ($ dirreach_{D,\varepsilon,\mu}(p, q) $).
+\definition{bezpośrednia gęstościowa osiągalność (ang. direct density reachability) (\myhyperref{fig:core-edge-point}{rysunek})}\newline
+Punkt $ p $ jest bezpośrednio gęstościowo osiągalny z punktu $ q $, jeśli punkt $ q $ jest punktem rdzeniowym i $ p $ znajduje się w $ \varepsilon $-otoczeniu punktu $ q $ ($ dirreach_{D,\varepsilon,\mu}(p, q) $).
 \begin{equation} \label{direct-reachability}
 	dirreach_{D,\varepsilon,\mu}(p, q) \iff p \in N_{D,\varepsilon}(q) \land core_{D,\varepsilon,\mu}(q)
 \end{equation}
-To, że $ p $ jest bezpośrednio gęstościowo osiągalny z $ q $, nie determinuje, \mbox{że $ q $ jest} bezpośrednio gęstościowo osiągalny z $ p $.
+To, że $ p $ jest bezpośrednio gęstościowo osiągalny z $ q $, nie implikuje, \mbox{że $ q $ jest} bezpośrednio gęstościowo osiągalny z $ p $. Własność ta może być wyrażona następująco:
 \begin{equation} \label{direct-reachability-asymmetry}
 	\exists_D\;\neg\forall_{p,q\in D}\;dirreach_{D,\varepsilon,\mu}(p, q) \implies dirreach_{D,\varepsilon,\mu}(q, p)
 \end{equation}
 
-\definition{punkt brzegowy (ang. edge point)}\newline
+\definition{punkt brzegowy (ang. edge point) (\myhyperref{fig:core-edge-point}{rysunek})}\newline
 Punkt $ p $, który jest bezpośrednio gęstościowo osiągalny z innego \mbox{punktu $ q $}, ale sam nie jest punktem rdzeniowym, jest nazywany punktem brzegowym ($ edge_{D,\varepsilon,\mu}(p) $).
 \begin{equation}\label{edge-point}
-	edge_{D,\varepsilon,\mu}(p) \iff \neg core_{D,\varepsilon,\mu}(p) \land dirreach_{D,\varepsilon,\mu}(p,q)
+	edge_{D,\varepsilon,\mu}(p) \iff \neg core_{D,\varepsilon,\mu}(p) \land \exists_{q\in D}\, dirreach_{D,\varepsilon,\mu}(p,q)
 \end{equation}
 
 \definition{gęstościowa osiągalność (ang. density reachability)}\newline
-Jeśli w ciągu punktów $ p_1,\dots,p_n $ każdy punkt tego ciągu poza ostatnim jest bezpośrednio gęstościowo osiągalny z punktu następnego, to punkt $ p_1 $ jest gęstościowo osiągalny z $ p_n $.
+Jeśli w ciągu punktów $ p_1,\dots,p_n \in D $ każdy punkt tego ciągu poza ostatnim jest bezpośrednio gęstościowo osiągalny z punktu następnego, to punkt $ p_1 $ jest gęstościowo osiągalny z $ p_n $ ($ reach_{D,\varepsilon,\mu}(p_1, p_n) $).
 \begin{equation}
-	reach_{D,\varepsilon,\mu}(p_1, p_n)	\iff 	\exists_{p_1,\dots,p_n}\,\forall_{i\in\set{1,\dots,n-1}}\,dirreach_{D,\varepsilon,\mu}(p_i, p_{i+1})
-\end{equation}
-Podobnie, jak relacja bezpośredniej gęstościowej osiągalności, gęstościowa osiągalność nie jest relacją symetryczną.
-\begin{equation}
-	\exists_D\;\neg\forall_{p,q\in D}\;reach_{D,\varepsilon,\mu}(p, q) \implies reach_{D,\varepsilon,\mu}(q, p)
+	\exists_{p_1,\dots,p_n\in D}\,\forall_{i\in\set{1,\dots,n-1}}\,dirreach_{D,\varepsilon,\mu}(p_i, p_{i+1}) \implies reach_{D,\varepsilon,\mu}(p_1, p_n)
 \end{equation}
 
 \input{assets/figures/density-reachability}
 
-\newpage\definition{gęstościowa łączność (ang. density connectivity)}\newline
-Dwa punkty $ p $ i $ q $ są \textit{gęstościowo łączne}, jeśli istnieje taki punkt $ r $, że obydwa punkty $ p $ i $ q $ są gęstościowo osiągalne z $ r $.
+\definition{gęstościowa łączność (ang. density connectivity)}\newline
+Jeśli istnieje taki punkt $ r $, że punkty $ p $ i $ q $ są gęstościowo osiągalne z $ r $, to punkty $ p $ i $ q $ są gęstościowo połączone ($ connect_{D,\varepsilon,\mu}(p, q) $).
 \begin{equation}
 	connect_{D,\varepsilon,\mu}(p, q) \iff \exists_{r\in D}\,reach_{D,\varepsilon,\mu}(p, r) \land reach_{D,\varepsilon,\mu}(q, r)
 \end{equation}
 
 \definition{grupa (ang. cluster)}\newline
-Jeśli istnieje taki punkt $ q $, że $ p $ i $ q $ są gęstościowo łączne, to wtedy i tylko wtedy $ p $ należy do grupy $ C_i $. Jeśli $ p $ należy do grupy $ C_i $ i jest gęstościowo łączne z punktem $ r $ to wtedy i tylko wtedy punkty $ p $ i $ r $ należą do tej samej grupy $ C_i $.
+Zbiór punktów $ C $ jest grupą w $ D $, jeśli zawiera się w $ D $ i jest zbiorem wszystkich punktów gęstościowo osiągalnych z dowolnego punktu rdzeniowego \mbox{w $ D $}. 
 \begin{equation}\label{eq:cluster-def}
-\left\{
-\begin{array}{l}
-\exists_q\,connect_{D,\varepsilon,\mu}(p,q) \iff p\in C_i \\
-p \in C_i \land connect_{D,\varepsilon,\mu}(p,r) \iff p,r\in C_i 
-\end{array}
-\right.
+C = \set{p \in D | reach_{D,\varepsilon,\mu}(p, q)} \land core_{D,\varepsilon,\mu}(q) \land q \in D
 \end{equation}
 
 \definition{szum (ang. noise)}\newline
-Punkt $ p $, który nie należy do żadnej z grup $ C_i $, nazywa się szumem\linebreak ($ noise_{D,\varepsilon,\mu}(p) $). Taki punkt $ p $ nie jest gęstościowo łączny z żadnym innym punktem $ q $.
+Punkt $ p $, który nie jest punktem rdzeniowym oraz nie jest bezpośrednio gęstościowo osiągalny z żadnego punktu $q \in D$, nazywa się punktem szumu ($ noise_{D,\varepsilon,\mu}(p) $). 
 \begin{equation}
-	noise_{D,\varepsilon,\mu}(p) \iff \forall_i \;p\notin C_i \iff \forall_{q \in D} \,\neg connect_{D,\varepsilon,\mu}(p,q)
+	noise_{D,\varepsilon,\mu}(p) \iff \neg core_{D,\varepsilon,\mu}(p) \land \forall_{q\in D}\,\neg dirreach_{D,\varepsilon,\mu}(p, q)
 \end{equation}
 	
 \subsection{Algorytm}
-Na podstawie przedstawionej wcześniej definicji grupy autorzy DBSCAN zaproponowali algorytm grupowania. Wersję tego algorytmu z drobną poprawką prezentuje \myhyperref{alg:dbscan}{algorytm}. Dla zachowania konsekwencji z linią 11 procedury $ expandcluster $ w linii 3 został dodany warunek $ cid(w) = unde\f{}ined $. W ten sposób zachowana jest poprawność wyniku, a $ \varepsilon $-otoczenie jest wyznaczane dla każdego punktu tylko raz, w odróżnieniu od oryginalnej propozycji, gdzie $ \varepsilon $-otoczenie może być wyznaczone więcej niż jeden raz dla tego samego punktu. Dalej nazwa DBSCAN będzie używana w odniesieniu do \myhyperref{alg:dbscan}{algorytmu}.
+Na podstawie przedstawionej wcześniej definicji grupy autorzy DBSCAN zaproponowali algorytm grupowania. Wersję tego algorytmu z drobną poprawką prezentuje \myhyperref{alg:dbscan}{algorytm}. Dzięki wprowadzonej poprawce zachowana jest poprawność wyniku, a $ \varepsilon $-otoczenie jest wyznaczane dla każdego punktu tylko raz jak to zaproponowano w \cite{fasterdbscan}, w odróżnieniu od oryginalnej propozycji \cite{dbscan}, gdzie $ \varepsilon $-otoczenie może być wyznaczone więcej niż jeden raz dla tego samego punktu. Dalej nazwa DBSCAN będzie używana w odniesieniu do \myhyperref{alg:dbscan}{algorytmu}.
 
-Okazuje się, że zgodnie z definicją grupy (\myhyperref{eq:cluster-def}{wyrażenie}) punkt $ p $ zbioru danych $ D $ może należeć do więcej niż jednej grupy. Taka sytuacja może mieć miejsce, gdy punkt $ p $ jest gęstościowo łączny z punktami $ q $ i $ r $, ale punkty $ q $ i $ r $ nie są ze sobą gęstościowo łączne.
+Okazuje się, że zgodnie z definicją grupy (\myhyperref{eq:cluster-def}{wyrażenie}) punkt $ p $ zbioru danych $ D $ może należeć do więcej niż jednej grupy. Taka sytuacja może mieć miejsce, gdy punkt $ p $ jest gęstościowo osiągalny z punktów rdzeniowych $ q $ i $ r $, ale punkt $ q $ nie jest gęstościowo osiągalny z punktu $ r $. Wtedy punkt $ p $ będzie jednocześnie należał do dwóch różnych grup $ C_1 $ oraz $ C_2 $.
 \begin{equation}
-  \left. \begin{array}{r}
-		connected_{D,\varepsilon,\mu}(p, q) \\
-		connected_{D,\varepsilon,\mu}(p, r) \\
-		\neg connected_{D,\varepsilon,\mu}(q, r) \\
-	 	q \in C_i \land r \in C_j
-	\end{array} \right\}
-	\implies	p \in C_i \cap C_j
+  reach_{D,\varepsilon,\mu}(p, q) \land reach_{D,\varepsilon,\mu}(p, r) \land 
+  \neg reach_{D,\varepsilon,\mu}(q, r) \implies
+  p \in C_1 \cap C_2
 \end{equation}
 Stąd wynika, że punkt $ p $ musi być punktem brzegowym, ponieważ gdyby był punktem rdzeniowym, to $ q $ i $ r $ byłyby gęstościowo połączone za pośrednictwem $ p $.
 
