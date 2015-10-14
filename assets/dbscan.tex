@@ -18,7 +18,7 @@ Punkt $ p $, który posiada w swoim $ \varepsilon $-otoczeniu $ N_{D,\varepsilon
 \input{assets/figures/core-edge-point}
 
 \definition{bezpośrednia gęstościowa osiągalność (ang. direct density reachability) (\myhyperref{fig:core-edge-point}{rysunek})}\newline
-Punkt $ p $ jest bezpośrednio gęstościowo osiągalny z punktu $ q $, jeśli punkt $ q $ jest punktem rdzeniowym i $ p $ znajduje się w $ \varepsilon $-otoczeniu punktu $ q $ ($ dirreach_{D,\varepsilon,\mu}(p, q) $).
+Punkt $ p $ jest bezpośrednio gęstościowo osiągalny z punktu $ q $, jeśli $ q $ jest punktem rdzeniowym i $ p $ znajduje się w $ \varepsilon $-otoczeniu punktu $ q $ ($ dirreach_{D,\varepsilon,\mu}(p, q) $).
 \begin{equation} \label{direct-reachability}
 	dirreach_{D,\varepsilon,\mu}(p, q) \iff p \in N_{D,\varepsilon}(q) \land core_{D,\varepsilon,\mu}(q)
 \end{equation}
@@ -33,7 +33,7 @@ Punkt $ p $, który jest bezpośrednio gęstościowo osiągalny z innego \mbox{p
 	edge_{D,\varepsilon,\mu}(p) \iff \neg core_{D,\varepsilon,\mu}(p) \land \exists_{q\in D}\, dirreach_{D,\varepsilon,\mu}(p,q)
 \end{equation}
 
-\definition{gęstościowa osiągalność (ang. density reachability)}\newline
+\definition{gęstościowa osiągalność (ang. density reachability) (\myhyperref{fig:density-reachablity-reachability}{rysunek})}\newline
 Jeśli w ciągu punktów $ p_1,\dots,p_n \in D $ każdy punkt tego ciągu poza ostatnim jest bezpośrednio gęstościowo osiągalny z punktu następnego, to punkt $ p_1 $ jest gęstościowo osiągalny z $ p_n $ ($ reach_{D,\varepsilon,\mu}(p_1, p_n) $).
 \begin{equation}
 	\exists_{p_1,\dots,p_n\in D}\,\forall_{i\in\set{1,\dots,n-1}}\,dirreach_{D,\varepsilon,\mu}(p_i, p_{i+1}) \implies reach_{D,\varepsilon,\mu}(p_1, p_n)
@@ -41,38 +41,46 @@ Jeśli w ciągu punktów $ p_1,\dots,p_n \in D $ każdy punkt tego ciągu poza o
 
 \input{assets/figures/density-reachability}
 
-\definition{gęstościowa łączność (ang. density connectivity)}\newline
-Jeśli istnieje taki punkt $ r $, że punkty $ p $ i $ q $ są gęstościowo osiągalne z $ r $, to punkty $ p $ i $ q $ są gęstościowo połączone ($ connect_{D,\varepsilon,\mu}(p, q) $).
-\begin{equation}
-	connect_{D,\varepsilon,\mu}(p, q) \iff \exists_{r\in D}\,reach_{D,\varepsilon,\mu}(p, r) \land reach_{D,\varepsilon,\mu}(q, r)
-\end{equation}
-
 \definition{grupa (ang. cluster)}\newline
 Zbiór punktów $ C $ jest grupą w $ D $, jeśli zawiera się w $ D $ i jest zbiorem wszystkich punktów gęstościowo osiągalnych z dowolnego punktu rdzeniowego \mbox{w $ D $}. 
 \begin{equation}\label{eq:cluster-def}
 C = \set{p \in D | reach_{D,\varepsilon,\mu}(p, q)} \land core_{D,\varepsilon,\mu}(q) \land q \in D
 \end{equation}
 
-\definition{szum (ang. noise)}\newline
+\definition{punkt szumu (ang. noise point)}\newline
 Punkt $ p $, który nie jest punktem rdzeniowym oraz nie jest bezpośrednio gęstościowo osiągalny z żadnego punktu $q \in D$, nazywa się punktem szumu ($ noise_{D,\varepsilon,\mu}(p) $). 
 \begin{equation}
 	noise_{D,\varepsilon,\mu}(p) \iff \neg core_{D,\varepsilon,\mu}(p) \land \forall_{q\in D}\,\neg dirreach_{D,\varepsilon,\mu}(p, q)
 \end{equation}
-	
-\subsection{Algorytm}
-Na podstawie przedstawionej wcześniej definicji grupy autorzy DBSCAN zaproponowali algorytm grupowania. Wersję tego algorytmu z drobną poprawką prezentuje \myhyperref{alg:dbscan}{algorytm}. Dzięki wprowadzonej poprawce zachowana jest poprawność wyniku, a $ \varepsilon $-otoczenie jest wyznaczane dla każdego punktu tylko raz jak to zaproponowano w \cite{fasterdbscan}, w odróżnieniu od oryginalnej propozycji \cite{dbscan}, gdzie $ \varepsilon $-otoczenie może być wyznaczone więcej niż jeden raz dla tego samego punktu. Dalej nazwa DBSCAN będzie używana w odniesieniu do \myhyperref{alg:dbscan}{algorytmu}.
 
-Okazuje się, że zgodnie z definicją grupy (\myhyperref{eq:cluster-def}{wyrażenie}) punkt $ p $ zbioru danych $ D $ może należeć do więcej niż jednej grupy. Taka sytuacja może mieć miejsce, gdy punkt $ p $ jest gęstościowo osiągalny z punktów rdzeniowych $ q $ i $ r $, ale punkt $ q $ nie jest gęstościowo osiągalny z punktu $ r $. Wtedy punkt $ p $ będzie jednocześnie należał do dwóch różnych grup $ C_1 $ oraz $ C_2 $.
+\subsection{Algorytm}
+Na podstawie przedstawionej wcześniej definicji grupy autorzy DBSCAN zaproponowali algorytm grupowania. Wersję tego algorytmu z drobną poprawką prezentuje \myhyperref{alg:dbscan}{algorytm}. Dzięki wprowadzonej poprawce, $ \varepsilon $-otoczenie jest wyznaczane dla każdego punktu tylko raz jak to zaproponowano w \cite{fasterdbscan}, w odróżnieniu od oryginalnej propozycji \cite{dbscan}, gdzie $ \varepsilon $-otoczenie może być wyznaczone więcej niż jeden raz dla tego samego punktu. Dalej nazwa DBSCAN będzie używana w odniesieniu do \myhyperref{alg:dbscan}{algorytmu}.
+
+Okazuje się, że zgodnie z definicją grupy (\myhyperref{eq:cluster-def}{wyrażenie}) punkt $ p $ zbioru danych $ D $ może jednocześnie należeć do więcej niż jednej grupy. Taka sytuacja może mieć miejsce, gdy punkt $ p $ jest gęstościowo osiągalny z punktów rdzeniowych $ q $ i $ r $, ale punkt $ q $ nie jest gęstościowo osiągalny z punktu $ r $. Wtedy punkt $ p $ będzie jednocześnie należał do dwóch różnych grup \mbox{$ C_1 $ oraz $ C_2 $}.
 \begin{equation}
   reach_{D,\varepsilon,\mu}(p, q) \land reach_{D,\varepsilon,\mu}(p, r) \land 
   \neg reach_{D,\varepsilon,\mu}(q, r) \implies
   p \in C_1 \cap C_2
 \end{equation}
-Stąd wynika, że punkt $ p $ musi być punktem brzegowym, ponieważ gdyby był punktem rdzeniowym, to $ q $ i $ r $ byłyby gęstościowo połączone za pośrednictwem $ p $.
+Stąd wynika, że punkt $ p $ musi być punktem brzegowym, ponieważ gdyby był punktem rdzeniowym, to punkt $ q $ byłby gęstościowo osiągalny z punktu $ r $ za pośrednictwem $ p $.
 
-Algorytm DBSCAN przypisuje każdy punkt ze zbioru danych do odpowiedniej grupy lub szumu poprzez nadanie punktom właściwych etykiet. Każdemu punktowi jest przypisywana tylko jedna etykieta, więc punkt może należeć do co najwyżej jednej grupy, stąd tworzone grupy nie są ściśle zgodne z definicją grupy (\myhyperref{eq:cluster-def}{wyrażenie}). Punkty brzegowe, które zgodnie z definicją grupy powinny należeć do więcej niż jednej grupy, są przez algorytm DBSCAN przypisywane tylko do jednej z tych grup. Co więcej, to, do której \mbox{z grup} zostanie przypisany punkt brzegowy, zależy od kolejności przetwarzania punktów zbioru danych.
+Algorytm DBSCAN przypisuje każdy punkt zbioru danych do odpowiedniej grupy lub do zbioru punktów szumu, poprzez nadanie punktom właściwych etykiet. Każdemu punktowi jest przypisywana tylko jedna etykieta, więc punkt może należeć do co najwyżej jednej z grup uzyskanych przy użyciu algorytmu DBSCAN, stąd tworzone grupy nie są ściśle zgodne z definicją grupy (\myhyperref{eq:cluster-def}{wyrażenie}). Punkty brzegowe, które zgodnie z definicją grupy powinny należeć do więcej niż jednej grupy, są przez algorytm DBSCAN przypisywane tylko do jednej z tych grup. Co więcej, to, do której \mbox{z grup} zostanie przypisany punkt brzegowy, zależy od kolejności przetwarzania punktów zbioru danych.
 
-Warto zwrócić uwagę, że $ \varepsilon $-otoczenie może być wyznaczane za pomocą dowolnej miary odległości lub podobieństwa\footnote{w przypadku miary podobieństwa należy w \myhyperref{eq:eps-neighbourhood}{wyrażeniu} zanegować wartość miary lub odwrócić znak nierówności}. Najczęściej stosowane miary to odległość euklidesowa, Manhattan oraz podobieństwo kosinusowe.
+Warto zwrócić uwagę, że $ \varepsilon $-otoczenie może być wyznaczane za pomocą dowolnej miary odległości lub podobieństwa\footnote{w przypadku miary podobieństwa należy w \myhyperref{eq:eps-neighbourhood}{wyrażeniu} zanegować wartość miary lub odwrócić znak nierówności}. Do najczęściej stosowanych miar należą: odległość euklidesowa, odległość Manhattan oraz podobieństwo kosinusowe.
+\smallskip
+
+\definition{odległość euklidesowa ($ d_e $)}
+\begin{equation}
+	d_e(p, q) = \sqrt{p \cdot q}
+\end{equation}
+\definition{odległość Manhattan ($ d_m $)}
+\begin{equation}
+d_m(p, q) = \sum_i^{n}{\abs{p_i-q_i}} \;:\; p,q\in \mathcal{R}^n
+\end{equation}
+\definition{podobieństwo kosinusowe ($ s_{cos} $)}
+\begin{equation}
+s_{cos}(p, q) = \frac{p \cdot q}{\norm{p}\norm{q}}
+\end{equation}
 
 \input{assets/algorithms/dbscan}
 
