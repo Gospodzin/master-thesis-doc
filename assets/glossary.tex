@@ -1,0 +1,34 @@
+\newcommand{\sigsgls}[5]{
+	\newglossaryentry{#1}{ type={sigs}, name={#2}, description={#3}, symbol={#4}, sort={#5} }	
+}
+
+\sigsgls{D}{$\mathbf{D}$}{zbiór punktów poddawany grupowaniu}{\ensuremath{D}}{D}
+\sigsgls{dim}{$\mathbf{dim(D)}$}{wymiarowość zbioru D}{\ensuremath{dim}}{dim}
+\sigsgls{d}{$\mathbf{d(p,q)}$}{odległość między punktami $ p $ i $ q $}{\ensuremath{d}}{d}
+\sigsgls{d_e}{$\mathbf{d_e(p,q)}$}{odległość euklidesowa między punktami $ p $ i $ q $}{\ensuremath{d_e}}{d0}
+\sigsgls{d_m}{$\mathbf{d_m(p,q)}$}{odległość Manhattan między punktami $ p $ i $ q $}{\ensuremath{d_m}}{d1}
+\sigsgls{s_{cos}}{$\mathbf{s_{cos}(p,q)}$}{podobieńśtwo kosinusowe między punktami $ p $ i $ q $}{\ensuremath{s_{cos}}}{scos}
+\sigsgls{N}{$\mathbf{N_{D,\varepsilon}(p)}$}{$ \varepsilon $-otoczenie punktu $ p $ w $ D $}{\ensuremath{N}}{N0}
+\sigsgls{core}{$\mathbf{core_{D,\varepsilon,\mu}(p)}$}{$ p $ jest punktem rdzeniowym w $ D $ z parametrami $ \varepsilon $, $ \mu $}{\ensuremath{core}}{core0}
+\sigsgls{dirreach}{$\mathbf{dirreach_{D,\varepsilon,\mu}(p,q)}$}{$ p $ jest bezpośrednio gęstościowo osiągalne z $ q $ w $ D $ z parametrami $ \varepsilon $, $ \mu $}{\ensuremath{dirreach}}{dirreach0}
+\sigsgls{edge}{$\mathbf{edge_{D,\varepsilon,\mu}(p)}$}{$ p $ jest punktem brzegowym w $ D $ z parametrami $ \varepsilon $, $ \mu $}{\ensuremath{edge}}{edge0}
+\sigsgls{reach}{$\mathbf{reach_{D,\varepsilon,\mu}(p,q)}$}{$ p $ jest gęstościowo osiągalne z $ q $ w $ D $ z parametrami $ \varepsilon $, $ \mu $}{\ensuremath{reach}}{reach0}
+\sigsgls{noise}{$\mathbf{noise_{D,\varepsilon,\mu}(p)}$}{$ p $ jest punktem szumu w $ D $ z parametrami $ \varepsilon $, $ \mu $}{\ensuremath{noise}}{noise0}
+\sigsgls{N*}{$\mathbf{N^S_{D,\varepsilon}(p)}$}{$ \varepsilon $-otoczenie punktu $ p $ w $ D $ w podprzestrzeni $ S $}{\ensuremath{N}}{N1}
+\sigsgls{core*}{$\mathbf{core^S_{D,\varepsilon,\mu}(p)}$}{$ p $ jest punktem rdzeniowym w $ D $ z parametrami $ \varepsilon $, $ \mu $ w podprzestrzeni $ S $}{\ensuremath{core}}{core1}
+\sigsgls{dirreach*}{$\mathbf{dirreach^S_{D,\varepsilon,\mu}(p,q)}$}{$ p $ jest bezpośrednio gęstościowo osiągalne z $ q $ w $ D $ z parametrami $ \varepsilon $, $ \mu $ w podprzestrzeni $ S $}{\ensuremath{dirreach}}{dirreach1}
+\sigsgls{edge*}{$\mathbf{edge^S_{D,\varepsilon,\mu}(p)}$}{$ p $ jest punktem brzegowym w $ D $ z parametrami $ \varepsilon $, $ \mu $ w podprzestrzeni $ S $}{\ensuremath{edge}}{edge1}
+\sigsgls{reach*}{$\mathbf{reach^S_{D,\varepsilon,\mu}(p,q)}$}{$ p $ jest gęstościowo osiągalne z $ q $ w $ D $ z parametrami $ \varepsilon $, $ \mu $ w podprzestrzeni $ S $}{\ensuremath{reach}}{reach1}
+\sigsgls{noise*}{$\mathbf{noise^S_{D,\varepsilon,\mu}(p)}$}{$ p $ jest punktem szumu w $ D $ z parametrami $ \varepsilon $, $ \mu $ w podprzestrzeni $ S $}{\ensuremath{noise}}{noise1}
+\sigsgls{pi}{$\mathbf{\pi_S(p)}$}{projekcja punktu $ p $ na podprzestrzeń $ S $}{\ensuremath{\pi}}{pi}
+\sigsgls{conset}{$\mathbf{conset^S_{D,\varepsilon, \mu}(V)}$}{$ V $ jest gęstościowo połączonym zbiorem w $ D $ z parametrami $ \varepsilon $, $ \mu $ w podprzestrzeni $ S $}{\ensuremath{conset}}{conset}
+\sigsgls{eps-otoczenie s}{$\mathbf{\varepsilon}$-otoczenie$\mathbf{^S}$}{$ \varepsilon $-otoczenie w podprzestrzeni $ S $}{$ \varepsilon $-otoczenie}{eps-otoczenie}
+\sigsgls{punkt rdzeniowy s}{punkt rdzeniowy$\mathbf{^S}$}{punkt rdzeniowy w podprzestrzeni $ S $}{punkt rdzeniowy}{punkt rdzeniowy}
+\sigsgls{dirreach s}{bezpośrednia gęstościowa osiągalność$\mathbf{^S}$}{bezpośrednia gęstościowa osiągalność w podprzestrzeni $ S $}{bezpośrednia gęstościowa osiągalność}{bezpośrednia gęstościowa osiągalność}
+\sigsgls{punkt brzegowy s}{punkt brzegowy$\mathbf{^S}$}{punkt brzegowy w podprzestrzeni $ S $}{punkt brzegowy}{punkt brzegowy}
+\sigsgls{reach s}{gęstościowa osiągalność$\mathbf{^S}$}{gęstościowa osiągalność w podprzestrzeni $ S $}{gęstościowa osiągalność}{gęstościowa osiągalność}
+\sigsgls{grupa s}{grupa$\mathbf{^S}$}{grupa w podprzestrzeni $ S $}{grupa}{grupa}
+\sigsgls{punkt szumu s}{punkt szumu$\mathbf{^S}$}{punkt szumu w podprzestrzeni $ S $}{punkt szumu}{punkt szumu}
+
+\setglossarystyle{sigs}
+\printglossary[nonumberlist,type=sigs]

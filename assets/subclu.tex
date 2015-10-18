@@ -1,82 +1,89 @@
 \section{SUBCLU}
 
-SUBCLU \cite{subclu} jest algorytmem grupowania gęstościowego bazującym na \linebreak DBSCAN. Pozwala na wykrycie grup znajdujących się we wszystkich podprzestrzeniach grupowanego zbioru danych, gdzie podprzestrzeń jest rozumiana jako podzbiór współrzędnych grupowanych punktów. Grupowanie\linebreak \mbox{w podprzestrzeniach} jest szczególnie przydatne, gdy mamy do czynienia\linebreak \mbox{z wysokowymiarowymi} danymi. Wysokowymiarowe dane są z reguły rzadko rozmieszczone w przestrzeni, a niektóre atrybuty mogą zaszumiać grupy istniejące w podprzestrzeniach, dlatego grupowanie algorytmem DBSCAN wysokowymiarowych danych może nie dawać sensownych wyników.
+SUBCLU \cite{subclu} jest algorytmem grupowania gęstościowego bazującym na \linebreak DBSCAN. Pozwala na wykrycie grup znajdujących się we wszystkich podprzestrzeniach grupowanego zbioru danych, gdzie podprzestrzeń jest rozumiana jako podzbiór zbioru współrzędnych grupowanych punktów. Grupowanie \mbox{w podprzestrzeniach} jest szczególnie przydatne, gdy mamy do czynienia \mbox{z silnie} wysokowymiarowymi danymi. Wysokowymiarowe punkty są \mbox{z reguły} rzadko rozmieszczone w przestrzeni, a niektóre atrybuty mogą zaszumiać grupy istniejące w podprzestrzeniach, dlatego grupowanie algorytmem DBSCAN wysokowymiarowych danych może nie dawać sensownych wyników.
 
 \subsection{Definicje}
-Definicje zawarte w podrozdziale o DBSCAN zostają zapożyczone i zmodyfikowane, tak, aby umożliwić operacje w podprzestrzeni $ S $. Projekcja punktu $ p $ na podprzestrzeń $ S $ będzie oznaczana $\pi_S(p) $. Zakładamy, że grupowany jest $ d $ wymiarowy zbiór punktów $ D $.
+Definicje zawarte w podrozdziale o DBSCAN zostają zapożyczone i zmodyfikowane, tak, aby umożliwić operacje w podprzestrzeni $ S $. Projekcja punktu $ p $ na podprzestrzeń $ S $ będzie oznaczana $ \s{pi}_S(p) $. Zakładam, że poddany grupowaniu jest $ d $ wymiarowy zbiór punktów $ D $ i wartości $ \varepsilon $, $ \mu $ są ustalone.
+\smallskip
 \smallskip
 
-\setcounter{definitioncounter}{0}
-\definition{podprzestrzeń (ang. subspace)}\newline
- Przestrzeń atrybutów zbioru $ D $ można oznaczyć $ A=\set{a_1,\dots,a_d} $. Podprzestrzenią będzie nazywany każdy podzbiór przestrzeni atrybutów $ S \subseteq A $.
+\definition{\s{d:spaceandsubspace}}\newline
+ Przestrzenią jest zbiór wymiarów $ A=\set{a_1,\dots,a_d} $. Podprzestrzenią będzie nazywany każdy podzbiór przestrzeni wymiarów $ S \subseteq A $.
 \smallskip
 
-\definition{$ \varepsilon $-otoczenie (ang. $ \varepsilon $-neighbourhood)}\newline
-Zbiór punktów $ q\in D $ będący $ \varepsilon $-otoczeniem punktu $ p $ w podprzestrzeni $ S $ oznacza się $ N^S_{D,\varepsilon}(p) $ i definiuje następująco:
+\definition{\s{d:eps-otoczenie s} (ang. $ \varepsilon $-neighbourhood in subspace)}\newline
+Zbiór punktów $ V \subseteq \s{D} $ jest $ \varepsilon $-otoczeniem punktu $ p\in D $ w \mbox{podprzestrzeni $ S $} ($ \s{N*}^S_{D,\varepsilon}(p) $), jeśli dla każdego punktu $ q \in V $ projekcja $ \pi_S(q) $ znajduje się w odległości nie większej niż $ \varepsilon $ od projekcji $ \pi_S(p) $.
 \begin{equation}
-	N^S_{D,\varepsilon}(p) = \set{q \in D | d(\pi_s(p), \pi_s(q)) \le \varepsilon}
+	\s{N*}^S_{D,\varepsilon}(p) = \set{q \in D | d(\pi_s(p), \pi_s(q)) \le \varepsilon} \land p\in D
 \end{equation}
-
-\definition{punkt rdzeniowy (ang. core point)}\newline
-Jeśli punkt $ p $ jest punktem rdzeniowym w podprzestrzeni $ S $, to prawdziwy jest predykat $ core^S_{D,\varepsilon,\mu}(p) $.
-\begin{equation}
-	core^S_{D,\varepsilon,\mu}(p) \iff |N^S_{D,\varepsilon}(p)| \ge \mu
-\end{equation}
-
-\pagebreak \definition{bezpośrednia gęstościowa osiągalność (ang. direct density reachability)} \newline
-Jeśli punkt $ p $ jest bezpośrednio gęstościowo osiągalny z punktu $ q $ w podprzestrzeni $ S $, to prawdziwy jest predykat $ dirreach^S_{D,\varepsilon,\mu}(p, q) $.
-\begin{equation}
-	dirreach^S_{D,\varepsilon,\mu}(p, q) \iff p \in N^S_{D,\varepsilon}(q) \land core^S_{D,\varepsilon,\mu}(q)
-\end{equation}
-
-\definition{punkt brzegowy (ang. edge point)} \newline
-Jeśli punkt $ p $ jest punktem brzegowym w podprzestrzeni $ S $, to prawdziwy jest predykat $ edge^S_{D,\varepsilon,\mu}(p) $.
-\begin{equation}
-	edge^S_{D,\varepsilon,\mu}(p) \iff \neg core^S_{D,\varepsilon,\mu}(p) \land dirreach^S_{D,\varepsilon,\mu}(p,q)
-\end{equation}
-
-\definition{gęstościowa osiągalność (ang. density reachability)} \newline
-Jeśli punkt $ p $ jest gęstościowo osiągalny z punktu $ q $ w podprzestrzeni $ S $, to prawdziwy jest predykat $ reach^S_{D,\varepsilon,\mu}(p_1, p_n) $.
-\begin{equation}
-	reach^S_{D,\varepsilon,\mu}(p_1, p_n)	\iff 	\exists_{p_1,\dots,p_n}\,\forall_{i\in\set{1,\dots,n-1}}\,dirreach^S_{D,\varepsilon,\mu}(p_i, p_{i+1}) 
-\end{equation}
-
-\definition{gęstościowa łączność (ang. density connectivity)} \newline
-Jeśli punkty $ p $ i $ q $ są gęstościowo łączne, to prawdziwy jest predykat \linebreak $ connect^S_{D,\varepsilon,\mu}(p, q) $.
-\begin{equation}
-connect^S_{D,\varepsilon,\mu}(p, q) \iff \exists_{r\in D}\,reach^S_{D,\varepsilon,\mu}(p, r) \land reach^S_{D,\varepsilon,\mu}(q, r)
-\end{equation}
-
-\definition{grupa (ang. cluster)} \newline
-Grupę $ C_i $ definiuje się następująco:
-\begin{equation}
-	\left\{
-	\begin{array}{l}
-		\exists_q\,connect^S_{D,\varepsilon,\mu}(p,q) \iff p\in C_i \\
-		p \in C_i \land connect^S_{D,\varepsilon,\mu}(p,r) \iff p,r\in C_i 
-	\end{array}
-	\right.
-\end{equation}
-
-
-\definition{szum (ang. noise)} \newline
-Jeśli punkt $ p $ jest szumem w podprzestrzeni $ S $, to prawdziwy jest predykat $ noise^S_{D,\varepsilon,\mu}(p) $.
-\begin{equation}
-	noise^S_{D,\varepsilon,\mu}(p) \iff \forall_i \;p\notin C_i \iff \forall_{q \in D} \,\neg connect^S_{D,\varepsilon,\mu}(p,q)
-\end{equation}
-
-\definition{gęstościowo łączny zbiór (ang. density connected set)}\newline
-Jeśli każdy punkt zbioru $ V $ jest gęstościowo łączny w podprzestrzeni $ S $ \pagebreak \linebreak\mbox{z każdym} punktem należącym do $ V $, to zbiór $ V $ jest gęstościowo łączny \mbox{w $ S $} ($ conset^S_{D,\varepsilon, \mu}(V) $).
-\begin{equation}
-	conset^S_{D,\varepsilon, \mu}(V) \iff \forall_{p,q\in V}\,connect^S_{D,\varepsilon, \mu}(p,q)
-\end{equation}
-Każda grupa jest jednocześnie gęstościowo łącznym zbiorem, ale nie każdy gęstościowo łączny zbiór $ V $ jest grupą, ponieważ gęstościowo łączny zbiór nie gwarantuje, że zawiera wszystkie punkty należące do zbioru danych $ D $, które są gęstościowo łączne z dowolnym punktem w $ V $.
+Odnosząc się do $ \varepsilon $-otoczenia w podprzestrzeni $ S $ będę stosował uproszczony zapis: \textit{\s{eps-otoczenie s}$^S$}.
 \smallskip
 
-\definition{monotoniczność gęstościowej łączności (ang. monotonicity of density connectivity)}\newline
-Monotonicznością gęstościowej łączności nazywa się własność, która oznacza, że jeśli w podprzestrzeni $ S $ istnieje gęstościowo łączny zbiór $ V $, to zbiór $ V $ jest też gęstościowo łączny w podprzestrzeni $ T \subseteq S $.
+\definition{\s{d:punkt rdzeniowy w podprzestrzeni} (ang. core point in subspace)}\newline
+Punkt $ p \in D $ jest punktem rdzeniowym w podprzestrzeni $ S $ ($ \s{core*}^S_{D,\varepsilon,\mu}(p) $), jeśli liczba punktów w $ \varepsilon $-otoczeniu$^S $ punktu $ p $ jest większa lub równa $ \mu $.
 \begin{equation}
-	conset^S_{D,\varepsilon,\mu}(V) \implies conset^T_{D,\varepsilon,\mu}(V)
+	\s{core*}^S_{D,\varepsilon,\mu}(p) \iff |N^S_{D,\varepsilon}(p)| \ge \mu \land p\in D
+\end{equation}
+Odnosząc się do punktu rdzeniowego w podprzestrzeni $ S $ będę stosował uproszczony zapis: \textit{\s{punkt rdzeniowy s}$^S$}.
+\smallskip
+
+\definition{\s{d:dirreach s} (ang. direct density reachability in subspace)} \newline
+Punkt $ p\in D $ jest bezpośrednio gęstościowo osiągalny z punktu $ q\in D $ \mbox{w podprzestrzeni $ S $} ($ \s{dirreach*}^S_{D,\varepsilon,\mu}(p, q) $), jeśli $ q $ jest punktem rdzeniowym \mbox{i $ p $ należy} do $ \varepsilon $-otoczenia$^S$ punktu $ q $.
+\begin{equation}
+	\s{dirreach*}^S_{D,\varepsilon,\mu}(p, q) \iff p \in N^S_{D,\varepsilon}(q) \land core^S_{D,\varepsilon,\mu}(q)
+\end{equation}
+Odnosząc się do bezpośredniej gęstościowej osiągalności w podprzestrzeni $ S $ będę stosował uproszczony zapis: \textit{\s{dirreach s}$^S$}.
+\smallskip
+
+\definition{\s{d:punkt brzegowy w podprzestrzeni} (ang. edge point in subspace)} \newline
+Punkt $ p\in D $ jest punktem brzegowym w podprzestrzeni $ S $ ($ edge^S_{D,\varepsilon,\mu}(p) $), jeśli nie jest punktem rdzeniowym$^S$ i jest bezpośrednio gęstościowo osiągalny$^S$ z innego punktu $ q $.
+\begin{equation}
+	\s{edge*}^S_{D,\varepsilon,\mu}(p) \iff \neg core^S_{D,\varepsilon,\mu}(p) \land dirreach^S_{D,\varepsilon,\mu}(p,q)
+\end{equation}
+Odnosząc się do punktu brzegowego w podprzestrzeni $ S $ będę stosował uproszczony zapis: \textit{\s{punkt brzegowy s} $^S$}.
+\smallskip
+
+\definition{\s{d:reach s} (ang. density reachability in subspace)} \newline
+Punkt $ p_1\in D $ jest gęstościowo osiągalny z punktu $ p_n\in D $ w podprzestrzeni $ S $ \linebreak($ reach^S_{D,\varepsilon,\mu}(p_1, p_n) $), jeśli istnieje ciąg punktów $ p_1,\dots,p_n \in D $ taki, że każdy punkt tego ciągu poza ostatnim jest bezpośrednio gęstościowo osiągalny$^S$ z punktu następnego.
+\begin{equation}
+	\exists_{p_1,\dots,p_n}\,\forall_{i\in\set{1,\dots,n-1}}\,dirreach^S_{D,\varepsilon,\mu}(p_i, p_{i+1}) \implies \s{reach*}^S_{D,\varepsilon,\mu}(p_1, p_n)	 
+\end{equation}
+Odnosząc się do gęstościowej osiągalności w podprzestrzeni $ S $ będę stosował uproszczony zapis: \textit{\s{reach s} $^S$}.
+\smallskip
+
+\definition{\s{d:grupa w podprzestrzeni} (ang. cluster in subspace)} \newline
+Zbiór punktów $ C $ jest grupą w podprzestrzeni $ S $ w zbiorze punktów $ D $, jeśli zawiera się w $ D $ i jest zbiorem wszystkich punktów gęstościowo osiągalnych$^S$ z dowolnego punktu rdzeniowego$^S$. 
+\begin{equation}
+C = \set{p \in D | \s{reach}^S_{D,\varepsilon,\mu}(p, q)} \land core^S_{D,\varepsilon,\mu}(q)
+\end{equation}
+Odnosząc się do grupy w podprzestrzeni $ S $ będę stosował uproszczony zapis: \textit{\s{grupa s}$^S$}.
+\smallskip
+
+\definition{\s{d:punkt szumu w podprzestrzeni} (ang. noise point in subspace)} \newline
+Punkt $ p\in D $ jest punktem szumu w podprzestrzeni $ S $ ($ \s{noise}_{D,\varepsilon,\mu}(p) $), jeśli nie jest punktem rdzeniowym$^S$ oraz nie jest bezpośrednio gęstościowo osiągalny$^S$ z żadnego punktu $q \in D$. 
+\begin{equation}
+noise^S_{D,\varepsilon,\mu}(p) \iff \neg core^S_{D,\varepsilon,\mu}(p) \land \forall_{q\in D}\,\neg dirreach^S_{D,\varepsilon,\mu}(p, q)
+\end{equation}
+Odnosząc się do punktu szumu w podprzestrzeni $ S $ będę stosował uproszczony zapis: \textit{\s{punkt szumu s}$^S$}.
+\smallskip
+
+\definition{\s{d:conset} (ang. density connected set in subspace)}\newline
+Zbiór punktów $ V \subseteq D $ jest gęstościowo połączonym zbiorem w podprzestrzeni $ S $ ($ \s{conset}^S_{D,\varepsilon, \mu}(V) $), jeśli istnieje taki punkt $ p \in D $, że każdy punkt $ q \in V $ jest gęstościowo osiągalny$^S$ z punktu $ p $.
+\begin{equation}
+	conset^S_{D,\varepsilon, \mu}(V) \iff 
+	\exists_{p\in D}
+	\forall_{q\in V}
+	\,reach^S_{D,\varepsilon,\mu}(q, p)
+\end{equation}
+Odnosząc się do gęstościowo połączonego zbioru w podprzestrzeni $ S $ będę stosował uproszczony zapis: \textit{gęstościowo połączony zbiór$^S$}. 
+
+Każda grupa$ ^S $ jest jednocześnie gęstościowo połączonym zbiorem$^S $, ale nie każdy gęstościowo połączony zbiór$^S $ $ V $ jest grupą$^S $, ponieważ $ V $ nie gwarantuje, że zawiera wszystkie punkty gęstościowo osiągalne$ ^S $ z punktu $ p $ takiego, że każdy punkt $ q\in V $ jest gęśtościowo osiągalny$ ^S $ z $ p $.
+\smallskip
+
+\definition{\s{d:consetmon} (ang. monotonicity of density connectivity)}\newline
+Monotonicznością gęstościowej łączności nazywa się własność, która oznacza, że jeśli istnieje gęstościowo połączony zbiór$^S$ $ V z$, to $ V $ jest też gęstościowo połączonym zbiorem$^T$ takim, że $ T \subseteq S $.
+\begin{equation}
+	T\subseteq S \land conset^S_{D,\varepsilon,\mu}(V) \implies conset^T_{D,\varepsilon,\mu}(V)
 \end{equation}
 
 \subsection{Algorytm}

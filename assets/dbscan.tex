@@ -2,55 +2,58 @@
 DBSCAN \cite{dbscan} jest popularnym algorytmem grupowania gęstościowego. Najważniejsze jego zalety wymienione przez autorów to tworzenie grup o dowolnym kształcie oraz możliwość doboru parametrów przy niewielkiej wiedzy o zbiorze danych. Grupy tworzone są na podstawie lokalnej gęstości punktu rozumianej jako liczba punktów w tzw. $ \varepsilon $-otoczeniu punktu i mają intuicyjne kształty. Ważną cechą DBSCAN jest też pojęcie punktów szumu, czyli takich, które nie pasują do żadnej grupy. Punkty szumu mogą być cenne, na przykład przy wykrywaniu anomalii.
 
 \subsection{Definicje}
+Zakładam, że grupowaniu poddany jest zbiór punktów \s{D} i wartości $ \varepsilon $, $ \mu $ są ustalone.
+\smallskip
 
-\definition{$ \varepsilon $-otoczenie (ang. $ \varepsilon $-neighbourhood)}\newline
-Zakładamy, że grupowany jest zbiór punktów $ D $. Zbiór punktów $ q \in D $, znajdujących się w odległości nie większej niż $ \varepsilon $ od punktu $ p $, nazywa się $ \varepsilon $-otoczeniem punktu $ p $. Dalej $\varepsilon$-otoczenie punktu $ p $ w zbiorze $ D $ będzie oznaczane $ N_{D,\varepsilon}(p) $.
+\definition{\s{d:eps-otoczenie} (ang. $ \varepsilon $-neighbourhood)}\newline
+ Zbiór punktów $ V \subseteq \s{D} $ jest $ \varepsilon $-otoczeniem punktu $ p\in D $ ($ \s{N}_{D,\varepsilon}(p) $), jeśli każdy punkt $ q \in V $ znajduje się w odległości nie większej niż $ \varepsilon $ od punktu $ p $.
 \begin{equation}\label{eq:eps-neighbourhood}
-	N_{D,\varepsilon}(p) = \set{q \in D | d(p, q) \le \varepsilon}
+	\s{N}_{D,\varepsilon}(p) = \set{q \in D | \s{d}(p, q) \le \varepsilon} \land p \in D
 \end{equation}
 
-\definition{punkt rdzeniowy (ang. core point) (\myhyperref{fig:core-edge-point}{rysunek})}\newline
-Punkt $ p $, który posiada w swoim $ \varepsilon $-otoczeniu $ N_{D,\varepsilon}(p) $ co najmniej \mbox{$ \mu $ punktów} jest nazywany punktem rdzeniowym ($ core_{D,\varepsilon,\mu}(p) $).
+\definition{\s{d:punkt rdzeniowy} (ang. core point) (\myhyperref{fig:core-edge-point}{rysunek})}\newline
+Punkt $ p \in D $ jest punktem rdzeniowym ($ core_{D,\varepsilon,\mu}(p) $), jeśli liczba punktów w $ \varepsilon $-otoczeniu punktu $ p $ jest większa lub równa $ \mu $.
+
 \begin{equation}\label{core-point}
-	core_{D,\varepsilon,\mu}(p) \iff |N_{D,\varepsilon}(p)| \ge \mu
+	\s{core}_{D,\varepsilon,\mu}(p) \iff |N_{D,\varepsilon}(p)| \ge \mu \land p \in D
 \end{equation}
 
 \input{assets/figures/core-edge-point}
 
-\definition{bezpośrednia gęstościowa osiągalność (ang. direct density reachability) (\myhyperref{fig:core-edge-point}{rysunek})}\newline
-Punkt $ p $ jest bezpośrednio gęstościowo osiągalny z punktu $ q $, jeśli $ q $ jest punktem rdzeniowym i $ p $ znajduje się w $ \varepsilon $-otoczeniu punktu $ q $ ($ dirreach_{D,\varepsilon,\mu}(p, q) $).
+\definition{\s{d:dirreach} (ang. direct density reachability) (\myhyperref{fig:core-edge-point}{rysunek})}\newline
+Punkt $ p \in D $ jest bezpośrednio gęstościowo osiągalny z punktu $ q \in D $ ($ dirreach_{D,\varepsilon,\mu}(p, q) $), jeśli $ q $ jest punktem rdzeniowym i $ p $ należy do $ \varepsilon $-otoczenia punktu $ q $.
 \begin{equation} \label{direct-reachability}
-	dirreach_{D,\varepsilon,\mu}(p, q) \iff p \in N_{D,\varepsilon}(q) \land core_{D,\varepsilon,\mu}(q)
+	\s{dirreach}_{D,\varepsilon,\mu}(p, q) \iff p \in N_{D,\varepsilon}(q) \land core_{D,\varepsilon,\mu}(q)
 \end{equation}
 To, że $ p $ jest bezpośrednio gęstościowo osiągalny z $ q $, nie implikuje, \mbox{że $ q $ jest} bezpośrednio gęstościowo osiągalny z $ p $. Własność ta może być wyrażona następująco:
 \begin{equation} \label{direct-reachability-asymmetry}
 	\exists_D\;\neg\forall_{p,q\in D}\;dirreach_{D,\varepsilon,\mu}(p, q) \implies dirreach_{D,\varepsilon,\mu}(q, p)
 \end{equation}
 
-\definition{punkt brzegowy (ang. edge point) (\myhyperref{fig:core-edge-point}{rysunek})}\newline
-Punkt $ p $, który jest bezpośrednio gęstościowo osiągalny z innego \mbox{punktu $ q $}, ale sam nie jest punktem rdzeniowym, jest nazywany punktem brzegowym ($ edge_{D,\varepsilon,\mu}(p) $).
+\definition{\s{d:punkt brzegowy} (ang. edge point) (\myhyperref{fig:core-edge-point}{rysunek})}\newline
+Punkt $ p \in D $ jest punktem brzegowym ($ \s{edge}_{D,\varepsilon,\mu}(p) $), jeśli nie jest punktem rdzeniowym i jest bezpośrednio gęstościowo osiągalny z innego \mbox{punktu $ q \in D $}.
 \begin{equation}\label{edge-point}
 	edge_{D,\varepsilon,\mu}(p) \iff \neg core_{D,\varepsilon,\mu}(p) \land \exists_{q\in D}\, dirreach_{D,\varepsilon,\mu}(p,q)
 \end{equation}
 
-\definition{gęstościowa osiągalność (ang. density reachability) (\myhyperref{fig:density-reachablity-reachability}{rysunek})}\newline
-Jeśli w ciągu punktów $ p_1,\dots,p_n \in D $ każdy punkt tego ciągu poza ostatnim jest bezpośrednio gęstościowo osiągalny z punktu następnego, to punkt $ p_1 $ jest gęstościowo osiągalny z $ p_n $ ($ reach_{D,\varepsilon,\mu}(p_1, p_n) $).
+\definition{\s{d:reach} (ang. density reachability) (\myhyperref{fig:density-reachablity-reachability}{rysunek})}\newline
+Punkt $ p_1 \in D$ jest gęstościowo osiągalny z punktu $ p_n\in D $ ($ \s{reach}_{D,\varepsilon,\mu}(p_1, p_n) $), jeśli istnieje ciąg punktów $ p_1,\dots,p_n \in D $ taki, że każdy punkt tego ciągu poza ostatnim jest bezpośrednio gęstościowo osiągalny z punktu następnego.
 \begin{equation}
-	\exists_{p_1,\dots,p_n\in D}\,\forall_{i\in\set{1,\dots,n-1}}\,dirreach_{D,\varepsilon,\mu}(p_i, p_{i+1}) \implies reach_{D,\varepsilon,\mu}(p_1, p_n)
+	\exists_{p_1,\dots,p_n\in D}\,\forall_{i\in\set{1,\dots,n-1}}\,dirreach_{D,\varepsilon,\mu}(p_i, p_{i+1}) \implies \s{reach}_{D,\varepsilon,\mu}(p_1, p_n)
 \end{equation}
 
 \input{assets/figures/density-reachability}
 
-\definition{grupa (ang. cluster)}\newline
-Zbiór punktów $ C $ jest grupą w $ D $, jeśli zawiera się w $ D $ i jest zbiorem wszystkich punktów gęstościowo osiągalnych z dowolnego punktu rdzeniowego \mbox{w $ D $}. 
+\definition{\s{d:grupa} (ang. cluster)}\newline
+Zbiór punktów $ C $ jest grupą w zbiorze punktów $ D $, jeśli zawiera się w $ D $ i jest zbiorem wszystkich punktów gęstościowo osiągalnych z dowolnego punktu rdzeniowego. 
 \begin{equation}\label{eq:cluster-def}
-C = \set{p \in D | reach_{D,\varepsilon,\mu}(p, q)} \land core_{D,\varepsilon,\mu}(q) \land q \in D
+C = \set{p \in D | \s{reach}_{D,\varepsilon,\mu}(p, q)} \land core_{D,\varepsilon,\mu}(q)
 \end{equation}
 
-\definition{punkt szumu (ang. noise point)}\newline
-Punkt $ p $, który nie jest punktem rdzeniowym oraz nie jest bezpośrednio gęstościowo osiągalny z żadnego punktu $q \in D$, nazywa się punktem szumu ($ noise_{D,\varepsilon,\mu}(p) $). 
+\definition{\s{d:punkt szumu} (ang. noise point)}\newline
+Punkt $ p\in D $ jest punktem szumu ($ \s{noise}_{D,\varepsilon,\mu}(p) $), jeśli nie jest punktem rdzeniowym oraz nie jest bezpośrednio gęstościowo osiągalny z żadnego punktu $q \in D$. 
 \begin{equation}
-	noise_{D,\varepsilon,\mu}(p) \iff \neg core_{D,\varepsilon,\mu}(p) \land \forall_{q\in D}\,\neg dirreach_{D,\varepsilon,\mu}(p, q)
+	noise_{D,\varepsilon,\mu}(p) \iff \neg core_{D,\varepsilon,\mu}(p) \land \forall_{q\in D}\,\neg dirreach_{D,\varepsilon,\mu}(p, q) \land p \in D
 \end{equation}
 
 \subsection{Algorytm}
@@ -69,15 +72,15 @@ Algorytm DBSCAN przypisuje każdy punkt zbioru danych do odpowiedniej grupy lub 
 Warto zwrócić uwagę, że $ \varepsilon $-otoczenie może być wyznaczane za pomocą dowolnej miary odległości lub podobieństwa\footnote{w przypadku miary podobieństwa należy w \myhyperref{eq:eps-neighbourhood}{wyrażeniu} zanegować wartość miary lub odwrócić znak nierówności}. Do najczęściej stosowanych miar należą: odległość euklidesowa, odległość Manhattan oraz podobieństwo kosinusowe.
 \smallskip
 
-\definition{odległość euklidesowa ($ d_e $)}
+\definition{\s{d:deuklides} (\s{d_e})}
 \begin{equation}
 	d_e(p, q) = \sqrt{p \cdot q}
 \end{equation}
-\definition{odległość Manhattan ($ d_m $)}
+\definition{\s{d:dmanhattan} (\s{d_m})}
 \begin{equation}
 d_m(p, q) = \sum_i^{n}{\abs{p_i-q_i}} \;:\; p,q\in \mathcal{R}^n
 \end{equation}
-\definition{podobieństwo kosinusowe ($ s_{cos} $)}
+\definition{\s{d:scos} (\s{s_{cos}})}
 \begin{equation}
 s_{cos}(p, q) = \frac{p \cdot q}{\norm{p}\norm{q}}
 \end{equation}
@@ -85,8 +88,8 @@ s_{cos}(p, q) = \frac{p \cdot q}{\norm{p}\norm{q}}
 \input{assets/algorithms/dbscan}
 
 \subsection{Wydajność}
-Najbardziej czasochłonną operacją algorytmu DBSCAN jest wyznaczanie $ \varepsilon $-otoczenia punktu. Dla każdego punktu $ \varepsilon $-otoczenie wyznaczane jest co najwyżej raz\footnote{$ \varepsilon $-otoczenie punktu $ p $ jest wyznaczane tylko, jeśli etykieta punktu $ p $ jest nieokreślona, a  po wyznaczeniu $ \varepsilon $-otoczenia zawsze do $ p $ jest przypisywana etykieta}, dlatego jeśli za operację podstawową przyjmiemy wyznaczanie $ \varepsilon $-otoczenia, to w takim sensie złożoność algorytmu będzie liniowa.
+Najbardziej czasochłonną operacją algorytmu DBSCAN (\myhyperref{alg:dbscan}{algorytm}) jest wyznaczanie $ \varepsilon $-otoczenia punktu. Dla każdego punktu $ \varepsilon $-otoczenie wyznaczane jest co najwyżej raz\footnote{$ \varepsilon $-otoczenie punktu $ p $ jest wyznaczane tylko, jeśli etykieta punktu $ p $ jest nieokreślona, a  po wyznaczeniu $ \varepsilon $-otoczenia zawsze do $ p $ jest przypisywana etykieta}, dlatego jeśli za operację podstawową przyjmiemy wyznaczanie $ \varepsilon $-otoczenia, to w takim sensie złożoność algorytmu będzie liniowa.
 
 Decydująca dla wydajnego działania DBSCAN jest optymalna implementacja wyznaczania $ \varepsilon $-otoczenia. Naiwnym sposobem otrzymania $ \varepsilon $-otoczenia jest sprawdzenie dla każdego punktu w zbiorze danych, czy znajduje się \mbox{w $ \varepsilon $-otoczeniu} punktu, dla którego jest poszukiwane $ \varepsilon $-otoczenie. Wyznaczanie $ \varepsilon $-otoczenia w ten sposób cechuje jednak liniowa złożoność względem liczby punktów w zbiorze danych, co przekłada się na złożoność kwadratową algorytmu DBSCAN. Istnieją metody pozwalające na wydajniejsze znajdowanie $ \varepsilon $-otoczenia i zostaną omówione w kolejnym rozdziale.
 
-Obliczanie wartości miary odległości lub podobieństwa jest czasochłonnym elementem wyznaczania $ \varepsilon $-otoczenia. Stosowane zazwyczaj miary wymagają liniowej liczby operacji względem wymiarowości zbioru danych. Wprowadza to liniową zależność czasu wyznaczania $ \varepsilon $-otoczenia od wymiarowości zbioru danych. Zakładając, że w podstawowym wariancie DBSCAN liczba operacji wyznaczania $ \varepsilon $-otoczenia jest kwadratowa względem rozmiaru zbioru danych, to za złożoność obliczeniową grupowania zbioru danych D można przyjąć $ \mathcal{O}(dim(D)|D|^2) $.
+Obliczanie wartości miary odległości lub podobieństwa stanowi w przypadku punktów o dużej liczbie wymiarów czasochłonny element wyznaczania $ \varepsilon $-otoczenia. Stosowane zazwyczaj miary wymagają liniowej liczby operacji względem wymiarowości zbioru danych. Wprowadza to liniową zależność czasu wyznaczania $ \varepsilon $-otoczenia od wymiarowości zbioru danych. Zakładając, że w podstawowym wariancie DBSCAN liczba operacji wyznaczania $ \varepsilon $-otoczenia jest kwadratowa względem rozmiaru zbioru danych, to za złożoność obliczeniową grupowania $ n $-wymiarowego zbioru danych $ D $ można przyjąć $ \mathcal{O}(\s{dim}(D)|D|^2) $.

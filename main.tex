@@ -2,15 +2,13 @@
 	lmargin=3cm, rmargin=2cm,
 	tmargin=2cm, bmargin=2cm, 
 	12pt]{mwrep}
-
+	
 \usepackage{setspace}
 \onehalfspacing
 
 \makeatletter
 \renewcommand\@makefntext[1]{\leftskip=2em\hskip-.79em\@makefnmark\ #1}
 \makeatother
-
-
 
 \usepackage{float}
 \restylefloat{table}
@@ -67,10 +65,38 @@
 
 \usepackage{tkz-graph}
 
+\usepackage{enumitem}
+
+\usepackage[nopostdot,nomain]{glossaries}	
+\newglossary[glg1]{defs}{gls1}{glo1}{Lista definicji}
+\newglossary[glg2]{sigs}{gls2}{glo2}{Wykaz oznaczeń}
+
+\newglossarystyle{defs}{%
+	\newcounter{deflist}%
+	\setglossarystyle{list}%
+	\renewcommand*{\glsgroupskip}{\smallskip}%
+  \renewcommand*{\glossentry}[2]{\stepcounter{deflist}%  
+  	\item[\glsentryitem{##1}%  
+  	\glstarget{##1}{Definicja \arabic{deflist}.}]  
+  \glossentrydesc{##1}\glspostdescription , s.\space##2}
+}
+
+\newglossarystyle{sigs}{%
+	\setglossarystyle{list}%
+	\renewcommand*{\glsgroupskip}{}%
+	\renewcommand*{\glossentry}[2]{%  
+		\item[\glsentryitem{##1}%  
+		\glstarget{##1}{\glossentryname{##1}}]  
+		- \glossentrydesc{##1}\glspostdescription\space##2\smallskip}
+}
+
+\makeglossaries
+
 % my commands
 \newcommand{\myhyperref}[2]{\hyperref[#1]{\mbox{#2 \ref*{#1}}}}
 \newcommand{\varImgWidth}{.6\linewidth}
 \newcommand{\f}{\hspace{-0.1em}f\hspace{-0.1em}}
+\newcommand{\s}[1]{\glssymbol*{#1}}
 
 \newcounter{definitioncounter}
 \newcommand{\definition}[1]{\noindent\stepcounter{definitioncounter}\textbf{Definicja \arabic{definitioncounter}.} \textit{#1}}
@@ -88,6 +114,9 @@
 	\pagenumbering{gobble}
 %	\setcounter{page}{4}
   \tableofcontents
+  
+  \input{assets/definitions}
+  \input{assets/glossary}
 
 	\pagenumbering{arabic}
 	\setcounter{page}{5}

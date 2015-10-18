@@ -1,0 +1,29 @@
+\newcommand\defsglsxx[4]{
+	\newglossaryentry{d:#1}{ name={#4}, description={#2}, symbol={#3} }
+}
+\newcommand\defsglsx[3]{\defsglsxx{#1}{#2}{#2}{#3}}
+\newcommand\defsgls[2]{\defsglsx{#1}{#1}{#2}}
+
+\defsglsx{eps-otoczenie}{\ensuremath{\varepsilon}-otoczenie}{A}
+\defsgls{punkt rdzeniowy}{B}
+\defsglsx{dirreach}{bezpośrednia gęstościowa osiągalność}{C}
+\defsgls{punkt brzegowy}{D}
+\defsglsx{reach}{gęstościowa osiągalność}{E}
+\defsgls{grupa}{F}
+\defsgls{punkt szumu}{G}
+\defsglsx{deuklides}{odległość euklidesowa}{H}
+\defsglsx{dmanhattan}{odległość Manhattan}{I}
+\defsglsx{scos}{podobieństwo kosinusowe}{J}
+\defsglsxx{spaceandsubspace}{przestrzeń i podprzestrzeń}{przestrzeń (ang. space) i podprzestrzeń (ang. subspace)}{K}
+\defsglsx{eps-otoczenie s}{$ \varepsilon $-otoczenie w podprzestrzeni}{L}
+\defsgls{punkt rdzeniowy w podprzestrzeni}{M}
+\defsglsx{dirreach s}{bezpośrednia gęstościowa osiągalność w podprzestrzeni}{N}
+\defsgls{punkt brzegowy w podprzestrzeni}{O}
+\defsglsx{reach s}{gęstościowa osiągalność w podprzestrzeni}{P}
+\defsgls{grupa w podprzestrzeni}{Q}
+\defsgls{punkt szumu w podprzestrzeni}{R}
+\defsglsx{conset}{gęstościowo połączony zbiór w podprzestrzeni}{S}
+\defsglsx{consetmon}{monotoniczność gęstościowej łączności}{T}
+
+\setglossarystyle{defs}
+\printglossary[type=defs]
