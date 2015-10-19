@@ -1,7 +1,15 @@
 \section{Metoda nierówności trójkąta}
-Metoda nierówności trójkąta jest sposobem indeksowania danych optymalizującym wyznaczanie $ \varepsilon $-otoczenia. Działanie tej metody opiera się na wykorzystaniu nierówności trójkąta, dlatego wykorzystanie metody nierówności trójkąta jest niemożliwe, jeśli korzystamy z miary, która nie spełnia nierówności trójkąta.
-\subsection{Algorytm}
-Zakładam, że dla dowolnych trzech punktów $ p $, $ q $ i $ r $ zachodzi\linebreak \myhyperref{eq:ti-raw}{nierówność}. Jeśli wykorzystywana jest miara, dla której nie zachodzi ta nierówność, to nie można wykorzystać metody nierówności trójkąta.
+Metoda nierówności trójkąta jest sposobem indeksowania danych optymalizującym wyznaczanie $ \varepsilon $-otoczenia. Działanie tej metody opiera się na wykorzystaniu nierówności trójkąta, dlatego bezpośrednie wykorzystanie metody nierówności trójkąta jest niemożliwe, jeśli korzystamy z miary, która nie spełnia nierówności trójkąta\footnote{W \cite{cosbyeuc} pokazano pośrednie wykorzystanie własności nierówności trójkąta do wyszukiwania $ \varepsilon $-otoczenia względem miary kosinusowej, która tej własności nie zachowuje. Rozwiązanie przedstawione w \cite{cosbyeuc} polega na sprowadzeniu wyznaczania $\varepsilon$-otoczenia względem miary kosinusowej, do wyznaczania $\varepsilon'$-otoczenia, gdzie $\varepsilon'$ jest deterministycznie zależne od $ \varepsilon $, względem miary euklidesowej, zachowującej własność nierówności trójkąta.}.
+\subsection{Algorytm wyszukiwania $\varepsilon$-otoczenia}
+Przedstawiany algorytm wyszukiwania $\varepsilon$-otoczenia jest oparty na propozycji \cite{tidbscan}. Zakładam, że dla dowolnych trzech punktów $ p $, $ q $ i $ r $ zachodzi \myhyperref{eq:ti-raw}{nierówność} względem miary odległości $ d $, czyli miary spełniającej następujące warunki:
+\begin{equation} \label{eq:metric}
+	\left\{\begin{array}{l}
+		d(p,q)=0 \iff p=q \\
+		d(p,q)=d(q,p) \\
+		d(p,q)\leq d(p,r) + d(r,q) \;\;\;\;\text{// nierówność trójkąta}
+	\end{array}\right.
+\end{equation}
+Jeśli wykorzystywana jest miara, która nie spełnia \myhyperref{eq:metric}{warunków} i w konsekwencji \myhyperref{eq:ti-raw}{nierówności}, to nie można bezpośrednio wykorzystać metody nierówności trójkąta.
 \begin{equation}\label{eq:ti-raw}
 	d(p,q) \ge \abs{d(p,r)-d(q,r)}
 \end{equation}
@@ -119,7 +127,7 @@ Kompletną metodę nierówności trójkąta przedstawia \myhyperref{alg:ti}{algo
 \subsection{Wydajność}
 Szukamy $ \varepsilon $-otoczenia punktu $ p $ w zbiorze danych $ D $. Aby zapewnić efektywne działanie \myhyperref{alg:ti}{algorytmu} warto jest wcześniej wyznaczyć odległości dla każdego punktu $ q $ w zbiorze danych $ D $ od punktu referencyjnego $ r $ i odpowiednio posortować punkty zbioru danych $ D $ względem odległości od $ r $. W ten sposób możemy zapewnić stałą złożoność operacji $ sortid(p) $, $ at(i) $ oraz $ d(at(i), r) $ dla $ i \in \set{1,\dots,|D|} $. Jeśli te warunki zostaną spełnione, to możemy przyjąć, że najbardziej czasochłonną operacją \myhyperref{alg:ti}{algorytmu} jest wyznaczanie odległości między punktem $ p $, a punktami $ q $ należącymi do zbioru \mbox{$ R = \set{q | d(q, r) \in \left[d(p,r)-\varepsilon,d(p,r)+\varepsilon\right]} $}. 
 
-Jeśli za operację podstawową uznamy obliczanie odległości, to złożoność obliczeniowa wyznaczania $ \varepsilon $-otoczenia za pomocą metody nierówności trójkąta zależy ściśle od liczebności zbioru $ R $. W pesymistycznym przypadku, dla dostatecznie dużej wartości $ \varepsilon $, liczebność $ R $ może równać się liczebności $ D $. Jeśli założyć, że odwzorowanie zbioru $ D $ na zbiór odległości od punktu referencyjnego $ T $ posiada rozkład równomierny, to liczebność zbioru $ R $ można przybliżyć jako stosunek $ \frac{2\varepsilon}{\max(T)-\min(T)} $. 
+Jeśli za operację podstawową uznamy obliczanie odległości, to złożoność obliczeniowa wyznaczania $ \varepsilon $-otoczenia za pomocą metody nierówności trójkąta zależy ściśle od liczebności zbioru $ R $. W pesymistycznym przypadku, dla dostatecznie dużej wartości $ \varepsilon $ liczebność $ R $ może równać się liczebności $ D $. Jeśli założyć, że odwzorowanie zbioru $ D $ na zbiór odległości od punktu referencyjnego $ T $ posiada rozkład równomierny, to liczebność zbioru $ R $ można przybliżyć jako stosunek $ \frac{2\varepsilon}{\max(T)-\min(T)} $. 
 
 Wydajność metody nierówności trójkąta można poprawić, zmniejszając wartość $ \varepsilon $. Wartość $ \varepsilon $ jest jednak parametrem, od którego zależy rezultat algorytmu i nie można go swobodnie zmieniać bez wpływu na wynik. Można za to wpływać na wartość $ m=\max(T)-\min(T) $ bez wpływu na otrzymywane $ \varepsilon $-otoczenie. Wartość $ m $ zależy od doboru punktu referencyjnego $ r $. Można przyjąć, że powinno się tak dobierać $ r $, żeby maksymalizować wartość $ m $. 
 
@@ -265,7 +273,7 @@ Jednym ze sposobów na wybranie efektywnego punktu referencyjnego jest wybór ta
 \begin{equation}\label{eq:ti-max-ref}
 	r=(a_1,\dots,a_{dim(D)})\ :\ a_i = max(\set{b_i | (b_1,\dots,b_{dim(D)}) \in D)})
 \end{equation}
-Niestety skuteczność tej metody jest wrażliwa na rozkład punktów w zbiorze danych. \myhyperref{img:ti-max-ref}{rysunki} przedstawiają sytuacje dla różnych rozkładów punktów. Na \myhyperref{img:ti-max-ref-good}{rysunku} położenie punktu $ r $ jest korzystniejsze i wartość $ m $ jest większa niż na \myhyperref{img:ti-max-ref-bad}{Rysunku}. W pewnym stopniu można sobie z tym problemem poradzić, wyznaczając punkty referencyjne, dla różnych kombinacji minimum lub maksimum dla poszczególnych współrzędnych (np. $ r=(a_{1max}, a_{2min}, a_{3min}, \dots) $). Następnie, dla każdego z punktów referencyjnych można wyznaczyć $ m $ i wybrać $ r $, dla którego $ m $ jest największe. Wyznaczenie wartości $ m $ dla danego $ r $ jest realizowalne w czasie liniowym, ale wygenerowanych punktów referencyjnych może być $ 2^{dim(D)} $. Aby uniknąć problemów wydajnościowych w przypadku wysokowymiarowych danych można się ograniczyć do $ k $ spośród wygenerowanych punktów referencyjnych. 
+Niestety skuteczność tej metody jest wrażliwa na rozkład punktów w zbiorze danych. \myhyperref{img:ti-max-ref}{rysunki} przedstawiają sytuacje dla różnych rozkładów punktów. Na \myhyperref{img:ti-max-ref-good}{rysunku} położenie punktu $ r $ jest korzystniejsze i wartość $ m $ jest większa niż na \myhyperref{img:ti-max-ref-bad}{rysunku}. W pewnym stopniu można sobie z tym problemem poradzić, wyznaczając punkty referencyjne dla różnych kombinacji minimum lub maksimum dla poszczególnych współrzędnych (np. $ r=(a_{1max}, a_{2min}, a_{3min}, \dots) $). Następnie, dla każdego z punktów referencyjnych można wyznaczyć $ m $ i wybrać $ r $, dla którego $ m $ jest największe. Wyznaczenie wartości $ m $ dla danego $ r $ jest realizowalne w czasie liniowym, ale wygenerowanych punktów referencyjnych może być $ 2^{dim(D)} $. Aby uniknąć problemów wydajnościowych w przypadku wysokowymiarowych danych, można się ograniczyć do $ k $ spośród wygenerowanych punktów referencyjnych. 
 
 \begin{table}[h] 
 	\footnotesize

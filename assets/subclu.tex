@@ -3,12 +3,12 @@
 SUBCLU \cite{subclu} jest algorytmem grupowania gęstościowego bazującym na \linebreak DBSCAN. Pozwala na wykrycie grup znajdujących się we wszystkich podprzestrzeniach grupowanego zbioru danych, gdzie podprzestrzeń jest rozumiana jako podzbiór zbioru współrzędnych grupowanych punktów. Grupowanie \mbox{w podprzestrzeniach} jest szczególnie przydatne, gdy mamy do czynienia \mbox{z silnie} wysokowymiarowymi danymi. Wysokowymiarowe punkty są \mbox{z reguły} rzadko rozmieszczone w przestrzeni, a niektóre atrybuty mogą zaszumiać grupy istniejące w podprzestrzeniach, dlatego grupowanie algorytmem DBSCAN wysokowymiarowych danych może nie dawać sensownych wyników.
 
 \subsection{Definicje}
-Definicje zawarte w podrozdziale o DBSCAN zostają zapożyczone i zmodyfikowane, tak, aby umożliwić operacje w podprzestrzeni $ S $. Projekcja punktu $ p $ na podprzestrzeń $ S $ będzie oznaczana $ \s{pi}_S(p) $. Zakładam, że poddany grupowaniu jest $ d $ wymiarowy zbiór punktów $ D $ i wartości $ \varepsilon $, $ \mu $ są ustalone.
+Definicje zawarte w podrozdziale o DBSCAN zostają zapożyczone i zmodyfikowane, tak aby umożliwić operacje w podprzestrzeni $ S $. Projekcja punktu $ p $ na podprzestrzeń $ S $ będzie oznaczana $ \s{pi}_S(p) $. Zakładam, że poddany grupowaniu jest $ n $ wymiarowy zbiór punktów $ D $ i wartości $ \varepsilon $, $ \mu $ są ustalone.
 \smallskip
 \smallskip
 
 \definition{\s{d:spaceandsubspace}}\newline
- Przestrzenią jest zbiór wymiarów $ A=\set{a_1,\dots,a_d} $. Podprzestrzenią będzie nazywany każdy podzbiór przestrzeni wymiarów $ S \subseteq A $.
+ Przestrzenią jest zbiór wszystkich wymiarów $ A=\set{a_1,\dots,a_n} $ zbioru $ D $. Podprzestrzenią jest każdy podzbiór przestrzeni wymiarów $ S \subseteq A $.
 \smallskip
 
 \definition{\s{d:eps-otoczenie s} (ang. $ \varepsilon $-neighbourhood in subspace)}\newline
@@ -16,7 +16,7 @@ Zbiór punktów $ V \subseteq \s{D} $ jest $ \varepsilon $-otoczeniem punktu $ p
 \begin{equation}
 	\s{N*}^S_{D,\varepsilon}(p) = \set{q \in D | d(\pi_s(p), \pi_s(q)) \le \varepsilon} \land p\in D
 \end{equation}
-Odnosząc się do $ \varepsilon $-otoczenia w podprzestrzeni $ S $ będę stosował uproszczony zapis: \textit{\s{eps-otoczenie s}$^S$}.
+Odnosząc się do $ \varepsilon $-otoczenia w podprzestrzeni $ S $, będę stosował uproszczony zapis: \textit{\s{eps-otoczenie s}$^S$}.
 \smallskip
 
 \definition{\s{d:punkt rdzeniowy w podprzestrzeni} (ang. core point in subspace)}\newline
@@ -24,7 +24,7 @@ Punkt $ p \in D $ jest punktem rdzeniowym w podprzestrzeni $ S $ ($ \s{core*}^S_
 \begin{equation}
 	\s{core*}^S_{D,\varepsilon,\mu}(p) \iff |N^S_{D,\varepsilon}(p)| \ge \mu \land p\in D
 \end{equation}
-Odnosząc się do punktu rdzeniowego w podprzestrzeni $ S $ będę stosował uproszczony zapis: \textit{\s{punkt rdzeniowy s}$^S$}.
+Odnosząc się do punktu rdzeniowego w podprzestrzeni $ S $, będę stosował uproszczony zapis: \textit{\s{punkt rdzeniowy s}$^S$}.
 \smallskip
 
 \definition{\s{d:dirreach s} (ang. direct density reachability in subspace)} \newline
@@ -32,7 +32,7 @@ Punkt $ p\in D $ jest bezpośrednio gęstościowo osiągalny z punktu $ q\in D $
 \begin{equation}
 	\s{dirreach*}^S_{D,\varepsilon,\mu}(p, q) \iff p \in N^S_{D,\varepsilon}(q) \land core^S_{D,\varepsilon,\mu}(q)
 \end{equation}
-Odnosząc się do bezpośredniej gęstościowej osiągalności w podprzestrzeni $ S $ będę stosował uproszczony zapis: \textit{\s{dirreach s}$^S$}.
+Odnosząc się do bezpośredniej gęstościowej osiągalności w podprzestrzeni $ S $, będę stosował uproszczony zapis: \textit{\s{dirreach s}$^S$}.
 \smallskip
 
 \definition{\s{d:punkt brzegowy w podprzestrzeni} (ang. edge point in subspace)} \newline
@@ -40,15 +40,15 @@ Punkt $ p\in D $ jest punktem brzegowym w podprzestrzeni $ S $ ($ edge^S_{D,\var
 \begin{equation}
 	\s{edge*}^S_{D,\varepsilon,\mu}(p) \iff \neg core^S_{D,\varepsilon,\mu}(p) \land dirreach^S_{D,\varepsilon,\mu}(p,q)
 \end{equation}
-Odnosząc się do punktu brzegowego w podprzestrzeni $ S $ będę stosował uproszczony zapis: \textit{\s{punkt brzegowy s} $^S$}.
+Odnosząc się do punktu brzegowego w podprzestrzeni $ S $, będę stosował uproszczony zapis: \textit{\s{punkt brzegowy s}$^S$}.
 \smallskip
 
 \definition{\s{d:reach s} (ang. density reachability in subspace)} \newline
-Punkt $ p_1\in D $ jest gęstościowo osiągalny z punktu $ p_n\in D $ w podprzestrzeni $ S $ \linebreak($ reach^S_{D,\varepsilon,\mu}(p_1, p_n) $), jeśli istnieje ciąg punktów $ p_1,\dots,p_n \in D $ taki, że każdy punkt tego ciągu poza ostatnim jest bezpośrednio gęstościowo osiągalny$^S$ z punktu następnego.
+Punkt $ p_1\in D $ jest gęstościowo osiągalny z punktu $ p_n\in D $ w podprzestrzeni $ S $ \linebreak($ reach^S_{D,\varepsilon,\mu}(p_1, p_n) $), jeśli istnieje ciąg punktów $ p_1,\dots,p_n \in D $, taki że każdy punkt tego ciągu, poza ostatnim jest, bezpośrednio gęstościowo osiągalny$^S$ z punktu następnego.
 \begin{equation}
 	\exists_{p_1,\dots,p_n}\,\forall_{i\in\set{1,\dots,n-1}}\,dirreach^S_{D,\varepsilon,\mu}(p_i, p_{i+1}) \implies \s{reach*}^S_{D,\varepsilon,\mu}(p_1, p_n)	 
 \end{equation}
-Odnosząc się do gęstościowej osiągalności w podprzestrzeni $ S $ będę stosował uproszczony zapis: \textit{\s{reach s} $^S$}.
+Odnosząc się do gęstościowej osiągalności w podprzestrzeni $ S $, będę stosował uproszczony zapis: \textit{\s{reach s}$^S$}.
 \smallskip
 
 \definition{\s{d:grupa w podprzestrzeni} (ang. cluster in subspace)} \newline
@@ -56,7 +56,7 @@ Zbiór punktów $ C $ jest grupą w podprzestrzeni $ S $ w zbiorze punktów $ D 
 \begin{equation}
 C = \set{p \in D | \s{reach}^S_{D,\varepsilon,\mu}(p, q)} \land core^S_{D,\varepsilon,\mu}(q)
 \end{equation}
-Odnosząc się do grupy w podprzestrzeni $ S $ będę stosował uproszczony zapis: \textit{\s{grupa s}$^S$}.
+Odnosząc się do grupy w podprzestrzeni $ S $, będę stosował uproszczony zapis: \textit{\s{grupa s}$^S$}.
 \smallskip
 
 \definition{\s{d:punkt szumu w podprzestrzeni} (ang. noise point in subspace)} \newline
@@ -64,7 +64,7 @@ Punkt $ p\in D $ jest punktem szumu w podprzestrzeni $ S $ ($ \s{noise}_{D,\vare
 \begin{equation}
 noise^S_{D,\varepsilon,\mu}(p) \iff \neg core^S_{D,\varepsilon,\mu}(p) \land \forall_{q\in D}\,\neg dirreach^S_{D,\varepsilon,\mu}(p, q)
 \end{equation}
-Odnosząc się do punktu szumu w podprzestrzeni $ S $ będę stosował uproszczony zapis: \textit{\s{punkt szumu s}$^S$}.
+Odnosząc się do punktu szumu w podprzestrzeni $ S $, będę stosował uproszczony zapis: \textit{\s{punkt szumu s}$^S$}.
 \smallskip
 
 \definition{\s{d:conset} (ang. density connected set in subspace)}\newline
@@ -75,9 +75,9 @@ Zbiór punktów $ V \subseteq D $ jest gęstościowo połączonym zbiorem w podp
 	\forall_{q\in V}
 	\,reach^S_{D,\varepsilon,\mu}(q, p)
 \end{equation}
-Odnosząc się do gęstościowo połączonego zbioru w podprzestrzeni $ S $ będę stosował uproszczony zapis: \textit{gęstościowo połączony zbiór$^S$}. 
+Odnosząc się do gęstościowo połączonego zbioru w podprzestrzeni $ S $, będę stosował uproszczony zapis: \textit{gęstościowo połączony zbiór$^S$}. 
 
-Każda grupa$ ^S $ jest jednocześnie gęstościowo połączonym zbiorem$^S $, ale nie każdy gęstościowo połączony zbiór$^S $ $ V $ jest grupą$^S $, ponieważ $ V $ nie gwarantuje, że zawiera wszystkie punkty gęstościowo osiągalne$ ^S $ z punktu $ p $ takiego, że każdy punkt $ q\in V $ jest gęśtościowo osiągalny$ ^S $ z $ p $.
+Każda grupa$ ^S $ jest jednocześnie gęstościowo połączonym zbiorem$^S $, ale nie każdy gęstościowo połączony zbiór$^S $ $ V $ jest grupą$^S $, ponieważ $ V $ nie gwarantuje, że zawiera wszystkie punkty gęstościowo osiągalne$ ^S $ z punktu $ p $ takiego, że każdy punkt $ q\in V $ jest gęstościowo osiągalny$ ^S $ z $ p $.
 \smallskip
 
 \definition{\s{d:consetmon} (ang. monotonicity of density connectivity)}\newline
@@ -86,10 +86,10 @@ Monotonicznością gęstościowej łączności nazywa się własność, która o
 	T\subseteq S \land conset^S_{D,\varepsilon,\mu}(V) \implies conset^T_{D,\varepsilon,\mu}(V)
 \end{equation}
 
-\subsection{Algorytm}
-Najprostszym rozwiązaniem problemu znalezienia grup we wszystkich podprzestrzeniach zbioru D jest zastosowanie algorytmu DBSCAN do znalezienia grup w każdej z podprzestrzeni oddzielnie. W ten sposób można znaleźć wszystkie grupy istniejące w podprzestrzeniach zbioru $ D $. Istotnym problemem jest jednak liczba istniejących podprzestrzeni \mbox{zbioru $ D $}. Jeśli przyjmiemy, że zbiór $ D $ jest $ d $ wymiarowy, to zbiór $ D $ posiada $ 2^n $ podprzestrzeni. Grupowanie algorytmem DBSCAN trzeba przeprowadzić w każdej z podprzestrzeni poza $ 0 $-wymiarową podprzestrzenią, więc znalezienie grup we wszystkich podprzestrzeniach wymaga $ 2^n-1 $ grupowań algorytmem DBSCAN. Jest to istotne ograniczenie uniemożliwiające zastosowanie tej metody dla wysokowymiarowych danych.
+\subsection{Algorytm grupowania w podprzestrzeniach}
+Koncepcyjnie najprostszym rozwiązaniem problemu znalezienia grup we wszystkich podprzestrzeniach zbioru D jest zastosowanie algorytmu DBSCAN do znalezienia grup w każdej z podprzestrzeni oddzielnie. W ten sposób można znaleźć wszystkie grupy istniejące w podprzestrzeniach zbioru $ D $. Istotnym problemem jest jednak liczba istniejących podprzestrzeni \mbox{zbioru $ D $}. Jeśli przyjmiemy, że zbiór $ D $ jest $ n $ wymiarowy, to zbiór $ D $ posiada $ 2^n $ podprzestrzeni. Grupowanie algorytmem DBSCAN trzeba przeprowadzić w każdej z podprzestrzeni poza $ 0 $ wymiarową podprzestrzenią, więc znalezienie grup we wszystkich podprzestrzeniach wymaga $ 2^n-1 $ grupowań algorytmem DBSCAN. Jest to istotne ograniczenie uniemożliwiające zastosowanie tej metody dla wysokowymiarowych danych.
 
-Okazuje się, że można istotnie ograniczyć liczbę punktów i podprzestrzeni, w których jest przeprowadzane grupowanie. Autorzy SUBCLU wykorzystali w tym celu własność monotoniczności gęstościowej łączności. Monotoniczność gęstościowej łączności wynika z faktu, że dla pary punktów $ p $ i $ q $ odległość między projekcjami $ \pi_S(p) $ i $ \pi_S(q) $ jest zawsze większa bądź równa od odległości między projekcjami $ \pi_T(p) $ i $ \pi_T(q) $, gdzie $ T \subseteq S $. 
+Okazuje się, że można istotnie ograniczyć liczbę punktów i podprzestrzeni, w których jest przeprowadzane grupowanie. Autorzy SUBCLU \cite{subclu} wykorzystali w tym celu własność monotoniczności gęstościowej łączności. Monotoniczność gęstościowej łączności wynika z faktu, że dla pary punktów $ p $ i $ q $ odległość między projekcjami $ \pi_S(p) $ i $ \pi_S(q) $ jest zawsze większa bądź równa od odległości między projekcjami $ \pi_T(p) $ i $ \pi_T(q) $, gdzie $ T \subseteq S $. 
 \begin{equation}\label{eq:d-vs-d-projected}
 \forall_{T\subseteq S}\,d(\pi_S(p),\pi_S(q)) \geq d(\pi_T(p), \pi_T(q))
 \end{equation}
@@ -100,18 +100,17 @@ Z \myhyperref{eq:d-vs-d-projected}{wyrażenia} wynikają zależności, które uz
 		\big(N^S_{D,\varepsilon}(p) \subseteq N^T_{D,\varepsilon}(p) \land \big(core^S_{D,\varepsilon,\mu}(p) \implies core^T_{D,\varepsilon,\mu}(p)\big)\big) \implies \\
 		\big(dirreach^S_{D,\varepsilon,\mu}(p, q) \implies dirreach^T_{D,\varepsilon,\mu}(p, q)\big) \implies \\
 		\big(reach^S_{D,\varepsilon,\mu}(p, q) \implies reach^T_{D,\varepsilon,\mu}(p, q)\big) \implies \\
-		\big(connect^S_{D,\varepsilon,\mu}(p, q) \implies connect^T_{D,\varepsilon,\mu}(p, q)\big) \implies \\
 		\big(conset^S_{D,\varepsilon,\mu}(V) \implies conset^T_{D,\varepsilon,\mu}(V)\big)
 	\end{array}
 \end{equation}
 
-Monotoniczność gęstościowej łączności nie jest wykorzystywana bezpośrednio, ale na jej podstawie, odwracając rozumowanie, można dojść do wniosku, że jeśli w podprzestrzeni $ T $ zbiór $ V $ nie jest gęstościowo łączny, to nie jest też gęstościowo łączny w $ S $. Posiłkując się faktem, że grupa jest gęstościowo łącznym zbiorem, dochodzimy do wniosku, że jeśli \mbox{w $ T $} nie istnieje żadna grupa, to żadna grupa nie może też istnieć w $ S $. Tym samym, jeśli w $ T $ nie istnieje żadna grupa, to nie ma sensu wykonywać grupowania w $ S $.
+Monotoniczność gęstościowej łączności nie jest wykorzystywana bezpośrednio, ale na jej podstawie, można dojść do wniosku, że jeśli zbiór $ V $ nie jest gęstościowo połączony$^T$, to nie jest też gęstościowo połączony$^S $. Posiłkując się faktem, że dla dowolnej podprzestrzeni $ U $ grupa$^U$ jest gęstościowo połączonym zbiorem$^U$, dochodzimy do wniosku, że jeśli nie istnieje żadna grupa$^T$, to nie może też istnieć żadna grupa$^S$. Tym samym, jeśli nie istnieje żadna grupa$^T$, to nie ma sensu wykonywać grupowania w podprzestrzeni $ S $.
 
-Z \myhyperref{eq:d-vs-d-projected}{wyrażenia} wynika jeszcze jedna ważna własność, którą SUBCLU wykorzystuje do ograniczenia liczby punktów zbioru danych podczas grupowania w podprzestrzeniach. Zbiór $ V $ może być zbiorem gęstościowo łącznym w podprzestrzeni $ S $, tylko jeśli $ V $ jest podzbiorem zbioru gęstościowo \linebreakłącznego $ W $ w $ T $.
+Z \myhyperref{eq:d-vs-d-projected}{wyrażenia} wynika jeszcze jedna własność, którą SUBCLU wykorzystuje do ograniczenia liczby punktów zbioru danych podczas grupowania w podprzestrzeniach. Zbiór $ V $ może być zbiorem gęstościowo połączonym$^S$, tylko jeśli $ V $ jest podzbiorem zbioru gęstościowo połączonego$^T$ $ W $.
 \begin{equation}
  conset^S_{D,\varepsilon,\mu}(V) \implies \exists_W\,V\subseteq W \land conset^T_{D,\varepsilon,\mu}(W)
 \end{equation}
-Dzięki temu grupowanie w podprzestrzeni $ S $ o wymiarowości większej niż $ 1 $ może być wykonywane na zbiorze danych składającym się tylko z punktów należących do grup znalezionych w podprzestrzeni $ T \subset S $.
+Dzięki temu grupowanie w podprzestrzeni $ S $ o wymiarowości większej niż jeden może być wykonywane na zbiorze danych składającym się tylko z punktów należących do grup znalezionych w podprzestrzeni $ T \subset S $.
 
 Kompletny algorytm grupowania SUBCLU przedstawia \myhyperref{alg:subclu}{algorytm}.
 
