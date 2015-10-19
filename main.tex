@@ -92,6 +92,24 @@
 
 \makeglossaries
 
+\usepackage{fancyhdr}
+\fancypagestyle{plain}{%
+	\renewcommand{\headrulewidth}{0pt}%
+	\fancyhf{}%
+	\fancyfoot[R]{\thepage}%
+}
+\pagestyle{plain}
+\fancypagestyle{opening}{%
+	\renewcommand{\headrulewidth}{0pt}%
+	\fancyhf{}%
+	\fancyfoot[R]{\thepage}%
+}
+\fancypagestyle{closing}{%
+	\renewcommand{\headrulewidth}{0pt}%
+	\fancyhf{}%
+	\fancyfoot[R]{\thepage}%
+}
+
 % my commands
 \newcommand{\myhyperref}[2]{\hyperref[#1]{\mbox{#2 \ref*{#1}}}}
 \newcommand{\varImgWidth}{.6\linewidth}
@@ -117,18 +135,19 @@
   \tableofcontents
   \onehalfspacing
  
-  \input{assets/definitions}
+% \input{assets/definitions}
  	\pagenumbering{arabic}
+ 
  	\setcounter{page}{5}
-  \input{assets/glossary}
+% \input{assets/glossary}
 	
-	\input{assets/intro}
+%	\input{assets/intro}
 	
-	\input{assets/clustering-algorithms}
+%	\input{assets/clustering-algorithms}
 	
 	\input{assets/efficient-methods}
 	
-	\input{assets/summary}
+%	\input{assets/summary}
 	
 	\clearpage
 	\bibliographystyle{plplain}
