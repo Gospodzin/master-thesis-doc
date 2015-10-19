@@ -1,7 +1,7 @@
 \section{Metoda projekcji}
 Metoda projekcji jest sposobem indeksowania danych optymalizującym wyznaczanie $ \varepsilon $-otoczenia. Metoda projekcji sposobem działania przypomina metodę nierówności trójkąta.
-\subsection{Algorytm}
-Zakładam, że szukamy $ \varepsilon $-otoczenia punktu $ p $ w zbiorze danych $ D $. Dla każdego punktu $ q \in D $ i wybranej współrzędnej projekcji $ l $ zachodzi zależność, że jeśli różnica wartości współrzędnej projekcji $ l $ punktów $ p $ i $ q $ jest większa niż $ \varepsilon $, to odległość między punktami $ p $ i $ q $ jest również większa od $ \varepsilon $, a stąd punkt $ q $ nie jest elementem $ \varepsilon $-otoczenia punktu $ p $. Projekcja punktu $ q $ na współrzędną \mbox{projekcji $ l $} będzie \mbox{oznaczana $ \pi_l(q) $}. Jeśli dla pewnej miary nie zachodzi \myhyperref{eq:projection-raw}{zależność}, to nie można z tą miarą stosować metody projekcji. 
+\subsection{Algorytm wyszukiwania $ \varepsilon $-otoczenia}
+Przedstawiany algorytm wyszukiwania $\varepsilon$-otoczenia jest oparty na propozycji \cite{tivsp}. Zakładam, że szukamy $ \varepsilon $-otoczenia punktu $ p $ w zbiorze danych $ D $. Dla każdego punktu $ q \in D $ i wybranej współrzędnej projekcji $ l $ zachodzi zależność, że jeśli różnica wartości współrzędnej projekcji $ l $ punktów $ p $ i $ q $ jest większa niż $ \varepsilon $, to odległość między punktami $ p $ i $ q $ jest również większa od $ \varepsilon $, a stąd punkt $ q $ nie jest elementem $ \varepsilon $-otoczenia punktu $ p $. Projekcja punktu $ q $ na współrzędną \mbox{projekcji $ l $} będzie \mbox{oznaczana $ \pi_l(q) $}. Jeśli dla pewnej miary nie zachodzi \myhyperref{eq:projection-raw}{zależność}, to nie można z tą miarą stosować metody projekcji. 
 \begin{equation} \label{eq:projection-raw}
 	\abs{\pi_l(p) - \pi_l(q)} > \varepsilon \implies d(p,q) > \varepsilon	\implies q \notin N_{D,\varepsilon}(p)
 \end{equation}

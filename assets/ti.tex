@@ -79,7 +79,7 @@ Punktów należących do $ \varepsilon $-otoczenia punktu $ p $ należy zatem sz
 		\caption{Wyznaczanie $ \varepsilon $-otoczenia punktu $ p=(2.4,2) $ metodą nierówności trójkąta dla punktu referencyjnego $ r=(0,0) $ i $ \varepsilon = 1$. Czerwonym kolorem oznaczono obszar, w którym odległość od punktu referencyjnego znajduje się w przedziale $ \left[d(p,r)-\varepsilon,d(p,r)+\varepsilon\right] $. Zielonym okręgiem oznaczono $ \varepsilon $-otoczenie punktu $ p $. Odległość od punktu $ p $ jest wyznaczana dla punktów 3,4,5,6. Punkty 4,6 tworzą $ \varepsilon $-otoczenia \mbox{punktu $ p $.}} \label{img:ti}
 \end{figure}
 
-Kompletną metodę nierówności trójkąta przedstawia \myhyperref{alg:ti}{algorytm}. Wdrożenie metody nierówności trójkąta do algorytmu DBSCAN ogranicza się do wyboru odpowiedniego $ r $ i wykonaniu następującego przypisania \linebreak\mbox{$ N_{D,\varepsilon}(p) \gets tineighbourhood(D, \varepsilon, r, p) $.}
+Kompletną metodę nierówności trójkąta przedstawia \myhyperref{alg:ti}{algorytm}. Wdrożenie metody nierówności trójkąta do algorytmu DBSCAN ogranicza się do wyboru odpowiedniego $ r $ i wykonaniu następującego przypisania \linebreak\mbox{$ N_{D,\varepsilon}(p) \gets tineighbourhood(D, \varepsilon, r, p) $ \cite{tidbscan}.}
 
 \begin{algorithm}[t]
 	\caption{Metoda nierówności trójkąta}\label{alg:ti}
@@ -112,11 +112,11 @@ Kompletną metodę nierówności trójkąta przedstawia \myhyperref{alg:ti}{algo
 	\myalg{\tineighbourhood{$D$, $\varepsilon$, $ r $, $ p $}}{
 		$ N \gets \set{p}$\;
 		$ i \gets sortid(p) - 1$\;
-		\While{$ i \ge 1 \land d(at(i), r) \in \left[d(p,r)-\varepsilon,d(p,r)+\varepsilon\right]$}{
+		\While{$ i \ge 1 \land d(at(i), r) \ge d(p,r)-\varepsilon$}{
 			\lIf{$ d(at(i),p) \le \varepsilon $}{$ N \gets N \cup {at(i)} $}
 			$ i \gets i - 1 $\;
 		}	
-		\While{$ i \le |D| \land d(at(i), r) \in \left[d(p,r)-\varepsilon,d(p,r)+\varepsilon\right]$}{
+		\While{$ i \le |D| \land d(at(i), r) \le d(p,r)+\varepsilon$}{
 			\lIf{$ d(at(i),p) \le \varepsilon $}{$ N \gets N \cup {at(i)} $}
 			$ i \gets i + 1 $\;
 		}		
@@ -296,11 +296,11 @@ Niestety skuteczność tej metody jest wrażliwa na rozkład punktów w zbiorze 
 Doświadczenia pokazują, że dobrymi wskaźnikami efektywności wybranego punktu referencyjnego, poza $ m $, mogą też być wartości odchylenia standardowego lub bezwzględnego średniego odchylenia odległości od punktu referencyjnego, przy czym należy te wartości maksymalizować. \myhyperref{tbl:ti-time-by-ref}{Tabela} przedstawia przykłady czasu grupowania rzeczywistych zbiorów danych w zależności od wartości wskaźników dla wybranego punktu referencyjnego.
 
 \subsubsection{Wiele punktów referencyjnych}
-Istnieje wariant metody nierówności trójkąta, który umożliwia wykorzystanie wielu punktów referencyjnych. Zakładam, że wyznaczane jest \linebreak$ \varepsilon $-otoczenie punktu $ p $ w zbiorze danych $ D $. Metoda nierówności trójkąta z wieloma punktami referencyjnymi działa podobnie jak zwykła metoda nierówności trójkąta. Nadal wymagane jest wybranie punktu referencyjnego $ r $, względem którego sortowany jest zbiór danych. Dodatkowo wybierany jest jeszcze zbiór innych punktów $ R $. Różnica w działaniu algorytmu polega na tym, że dodatkowo wprowadza się \myhyperref{eq:projection-mult}{warunek} na przynależność punktu $ q $ do $ \varepsilon $-otoczenia punktu $ p $.
+W \cite{tidbscan} przedstawiono także wariant metody nierówności trójkąta, który umożliwia wykorzystanie wielu punktów referencyjnych. Zakładam, że wyznaczane jest \linebreak$ \varepsilon $-otoczenie punktu $ p $ w zbiorze danych $ D $. Metoda nierówności trójkąta z wieloma punktami referencyjnymi działa podobnie jak zwykła metoda nierówności trójkąta. Nadal wymagane jest wybranie punktu referencyjnego $ r $, względem którego sortowany jest zbiór danych. Dodatkowo wybierany jest jeszcze zbiór innych punktów $ R $. Różnica w działaniu algorytmu polega na tym, że dodatkowo wprowadza się \myhyperref{eq:projection-mult}{warunek} na przynależność punktu $ q $ do $ \varepsilon $-otoczenia punktu $ p $.
 \begin{equation}\label{eq:ti-reference-mult}
 q \in N_{D,\varepsilon}(p) \implies  \forall_{\rho\in R}\,d(q,\rho) \in \left[d(p,\rho)-\varepsilon,d(p,\rho)+\varepsilon\right] 
 \end{equation}
-Dzięki wprowadzeniu \myhyperref{eq:projection-mult}{warunku} możemy uniknąć wyznaczania dystansu dla części punktów.
+Dzięki wprowadzeniu \myhyperref{eq:projection-mult}{warunku} możemy uniknąć wyznaczania odległości dla części punktów.
 
 \begin{algorithm}[t]
 	\caption{Metoda nierówności trójkąta z wieloma punktami referencyjnymi}\label{alg:ti-mult}
